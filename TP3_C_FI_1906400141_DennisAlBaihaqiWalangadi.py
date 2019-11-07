@@ -14,24 +14,25 @@ salam = ['Peu na haba?', 'Hadia Duria?', 'Aha do kabar?', 'Camano kabo awak?', '
          'Pimen kabare?', 'Napa habar?', 'Kayapa habar pian?', 'Aga kareba?', 'Sapunapi gatrane?', 'Punapi gatre?',
          'Brembe kabar?', 'Ngumbe kabarne?', 'Meluk rungan?', 'Bune haba?', 'Nara gerotelo?']
 guide = """
-IMPOR\t <file.csv>\tMengimpor data CSV ke Database, contoh: IMPOR file.csv
-EKSPOR\t <file.csv>\tMengekspor data Database ke CSV, contoh: EKSPOR file.csv
-CARINAMA <nama>\t\tMencari warisan budaya berdasarkan nama, contoh: CARINAMA Rendang
-CARITIPE <tipe>\t\tMencari warisan budaya berdasarkan tipe, contoh: CARITIPE Makanan
-CARIPROV <prov>\t\tMencari warisan budaya berdasarkan provinsi daerah asal, contoh: CARIPROV Bali
-TAMBAH\t <data>\t\tMenambahkan warisan budaya ke Database,\n\t\t\tcontoh: \
+\t*DAFTAR PERINTAH:*
+\tIMPOR\t <file.csv>\tMengimpor data CSV ke Database, contoh: IMPOR file.csv
+\tEKSPOR\t <file.csv>\tMengekspor data Database ke CSV, contoh: EKSPOR file.csv
+\tCARINAMA <nama>\t\tMencari warisan budaya berdasarkan nama, contoh: CARINAMA Rendang
+\tCARITIPE <tipe>\t\tMencari warisan budaya berdasarkan tipe, contoh: CARITIPE Makanan
+\tCARIPROV <prov>\t\tMencari warisan budaya berdasarkan provinsi daerah asal, contoh: CARIPROV Bali
+\tTAMBAH\t <data>\t\tMenambahkan warisan budaya ke Database,\n\t\t\t\t  contoh: \
 TAMBAH Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id
-UPDATE\t <data>\t\tMemperbarui data warisan budaya,\n\t\t\tcontoh: \
+\tUPDATE\t <data>\t\tMemperbarui data warisan budaya,\n\t\t\t\t  contoh: \
 UPDATE Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id
-HAPUS\t <nama>\t\tMenghapus data warisan budaya, contoh: HAPUS Tari Saman
-LIHATREF <nama>\t\tMembuka referensi berdasarkan nama budaya, contoh: LIHATREF Rendang
-LIHATDATA \t\tmelihat data yang disimpan
-STAT\t\t\tMenghitung banyaknya warisan budaya di Database
-STATTIPE\t\tMenampilkan data di Database berdasarkan tipe
-STATPROV\t\tMenampilkan data di Database berdasarkan provinsi
-PANDUAN\t\t\tMelihat panduan daftar perintah
-BERSIHKAN \t\tMembersihkan terminal
-KELUAR\t\t\tKeluar BudayaKB Lite
+\tHAPUS\t <nama>\t\tMenghapus data warisan budaya, contoh: HAPUS Tari Saman
+\tLIHATREF <nama>\t\tMembuka referensi berdasarkan nama budaya, contoh: LIHATREF Rendang
+\tLIHATDATA \t\tmelihat data yang disimpan
+\tSTAT\t\t\tMenghitung banyaknya warisan budaya di Database
+\tSTATTIPE\t\tMenampilkan data di Database berdasarkan tipe
+\tSTATPROV\t\tMenampilkan data di Database berdasarkan provinsi
+\tPANDUAN\t\t\tMelihat panduan daftar perintah
+\tBERSIHKAN \t\tMembersihkan terminal
+\tKELUAR\t\t\tKeluar BudayaKB Lite
 """
 banner = f"{'':=<68}"+u"""\u001b[31m
   ____            _                   _  ______    _     _ _       
@@ -340,7 +341,9 @@ def main():
                 bukalink(perintah)
 
             elif perintah[0].upper() == "LIHATDATA":
-                print("\n", lihatdata(database), "\n")
+                print("\n")
+                lihatdata(database)
+                print("\n")
 
             elif perintah[0].upper() == "STAT":
                 print(statistik())
