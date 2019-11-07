@@ -36,7 +36,7 @@ KELUAR\t\t\tKeluar BudayaKB Lite
 banner = f"{'':=<68}"+u"""\u001b[31m
   ____            _                   _  ______    _     _ _       
  | __ ) _   _  __| | __ _ _   _  __ _| |/ / __ )  | |   (_) |_ ___ 
- |  _ \\| | | |/ _` |/ _` | | | |/ _` | ' /|  _ \\  | |   | | __/ _ \\ \u001b[0m"""+"""
+ |  _ \\| | | |/ _` |/ _` | | | |/ _` | ' /|  _ \\  | |   | | __/ _ \\ \u001b[0m
  | |_) | |_| | (_| | (_| | |_| | (_| | . \\| |_) | | |___| | ||  __/ 
  |____/ \\__,_|\\__,_|\\__,_|\\__, |\\__,_|_|\\_\\____/  |_____|_|\\__\\___| 
                           |___/v0.0.2 - Dennis Al Baihaqi Walangadi\n"""+f"{'':=<68}"+"\n{:^68s}\n".format(
@@ -59,21 +59,27 @@ def kosong():
 def parse(perintah):
     """
     Parse argumen dari input yang sudah di split
-    :Param perintah: berupa list dari hasil split perintah
+    param perintah: berupa list dari hasil split perintah
     """
     return ' '.join(perintah[1:])
 
 
-def cekdata():
-    if len(database) != 0:
+def cekdata(gudangdata):
+    """
+    Mengecek apakah database masih kosong
+    param gudangdata = dictionary dalam dictionary, bertindak sebagai database
+    """
+    if len(gudangdata) != 0:
         return True
     else:
         return False
 
 
-def impordata(perintah):
+def impordata(perintah, gudangdata):
     """
     Membaca isi file csv dan memasukkannya ke dalam dictionary database
+    param perintah = list hasil split perintah asli
+    param gudangdata = dictionary dalam dictionary, bertindak sebagai database
     """
     try:
         if "csv" not in perintah[1].split("."):
@@ -85,12 +91,12 @@ def impordata(perintah):
                 counter = 0                                                             # Hitung jumlah baris
                 for baris in bukaFile:
                     if len(baris) != 0:                                                 # Cek apakah baris kosong
-                        if (baris[0].upper() in database) and (warn == False):          # Beri peringatan jika terdapat duplikat
-                            warn = True
-                        database[baris[0].upper()] = {}                                 # Buat Dictionary baru
+                        if (baris[0].upper() in gudangdata) and (warn == False):        # Beri peringatan jika terdapat
+                            warn = True                                                 # duplikat
+                        gudangdata[baris[0].upper()] = {}                               # Buat Dictionary baru
                         counter += 1                                                    # Tambah jumlah baris
-                        for data, tipe in zip(baris, kategori):                         # Isi database dengan data sesuai dengan kategori
-                            database[baris[0].upper()][tipe] = data
+                        for data, tipe in zip(baris, kategori):                         # Isi database dengan data
+                            gudangdata[baris[0].upper()][tipe] = data                     # sesuai dengan kategori
             if counter == 0:
                 return "File yang anda buka tidak memiliki data"
             if warn:
@@ -103,20 +109,22 @@ def impordata(perintah):
         return "Error: File tidak dapat ditemukan.\n"
 
 
-def ekspordata(perintah):
+def ekspordata(perintah, gudangdata):
     """
     Menulis sebuah file csv berdasarkan dictionary database
+    param perintah = list hasil split perintah asli
+    param gudangdata = dictionary dalam dictionary, bertindak sebagai database
     """
     try:
         judulEkspor = perintah[1]
         baris = []
         counter = 0
-        if ".csv" not in judulEkspor:                               # Cek apakah file beformat csv
+        if ".csv" not in judulEkspor:                                   # Cek apakah file beformat csv
             judulEkspor = judulEkspor+".csv"
-        for i in database:                                          # Siapkan semua isi data setiap key di database ke sebuah list
-            baris.append(database[i])
-        with open(judulEkspor, "w") as fileEkspor:                  # Buka file
-            ekspor = csv.DictWriter(fileEkspor, delimiter=",", fieldnames=kategori) # Menggunakan library CSV agar nggak susah memformat
+        for i in gudangdata:                                            # Siapkan semua isi data setiap key di database
+            baris.append(gudangdata[i])                                 # ke sebuah list
+        with open(judulEkspor, "w") as fileEkspor:                      # Buka file
+            ekspor = csv.DictWriter(fileEkspor, delimiter=",", fieldnames=kategori)  # Menggunakan library CSV
             for data in baris:
                 counter += 1
                 ekspor.writerow(data)                               # Print setiap data di dalam list baris
@@ -125,68 +133,78 @@ def ekspordata(perintah):
         return "Terjadi IOError, mohon cek kembali\n"               # Jaga-jaga kalau ada masalah di harddisk/ssd
 
 
-def carinama(nama,database):
+def carinama(nama, gudangdata):
     """
     Mencari isi database berdasarkan value nama budaya
     return sebuah list
+    param nama = Nama budaya
+    param gudangdata = dictionary dalam dictionary, bertindak sebagai database
     """
     terpilih = []
     if nama != '*':
         terpilih.append(','.join(
-            [i for i in database[nama.upper()].values()]))  # Ambil data berdasarkan key nama
+                [i for i in gudangdata[nama.upper()].values()]))    # Ambil data berdasarkan key nama
     else:
-        for keys in database:
+        for keys in gudangdata:
             terpilih.append(
-                ','.join([i for i in database[keys].values()]))  # Print semua jika data jika *
+                ','.join([i for i in gudangdata[keys].values()]))   # Print semua jika data jika *
     return terpilih
 
 
-def caritipe(tipe, database):
+def caritipe(tipe, gudangdata):
     """
     Mencari isi database berdasarkan value tipe budaya
     return list semua data yang sesuai
+    param tipe = Nama tipe
+    param gudangdata = dictionary dalam dictionary, bertindak sebagai database
     """
     terpilih = []
-    for data in database:
-        if database[data]['tipe'].upper() == tipe.upper():
-            terpilih.append(','.join([i for i in database[data].values()]))
+    for data in gudangdata:
+        if gudangdata[data]['tipe'].upper() == tipe.upper():
+            terpilih.append(','.join([i for i in gudangdata[data].values()]))
             continue
     return terpilih
 
 
-def cariprov(tipe, database):
+def cariprov(tipe, gudangdata):
+    """
+    Mencari isi database berdasarkan value provinsi asal budaya
+    return list semua data yang sesuai
+    param tipe = Nama provinsi
+    param gudangdata = dictionary dalam dictionary, bertindak sebagai database
+    """
     terpilih = []
-    for data in database:
-        if database[data]['provinsi'].upper() == tipe.upper():
-            print(','.join([i for i in database[data].values()]))
+    for data in gudangdata:
+        if gudangdata[data]['provinsi'].upper() == tipe.upper():
+            print(','.join([i for i in gudangdata[data].values()]))
             continue
     return terpilih
 
 
-def tambah(input, database, kategori):
+def tambah(datamasuk, gudangdata, kelas):
     """
     Menambahkan data kedalan database, sesuai dengan kategori
     input = berupa list
-    databse = dictionary dalam dictionary, bertindak sebagai database
+    gudangdata = dictionary dalam dictionary, bertindak sebagai database
     kategori = kategori sesuai urutan csv
     """
-    database[input[0].upper()] = {}
-    for data, tipe in zip(input, kategori):
-        database[input[0].upper()][tipe] = data
+    gudangdata[datamasuk[0].upper()] = {}
+    for data, tipe in zip(datamasuk, kelas):
+        gudangdata[datamasuk[0].upper()][tipe] = data
 
 
-def perbarui(newData, database):
+def perbarui(newdata, gudangdata):
     """
     Mengecek apakah ada data tersebut di atabase, jika ada maka perbarui
     newData = data yang akan baru
-    database = dictionary dalam dictionary, bertindak sebagai database
+    gudangdata = dictionary dalam dictionary, bertindak sebagai database
     return True/False
     """
     index = 0
-    for data in database:
-        if database[data]['namawarisanbudaya'].upper() == newData[0].upper():
+    for data in gudangdata:
+        if gudangdata[data]['namawarisanbudaya'].upper() == newdata[0].upper():
             for tipe in kategori:
-                database[data][tipe] = newData[index]
+                gudangdata[data][tipe] = newdata[index]
                 index += 1
                 continue
             return True
@@ -194,15 +212,15 @@ def perbarui(newData, database):
             return False
 
 
-def hapus(dataHapus, database):
+def hapus(datahapus, gudangdata):
     """
     Mengahpus data yang ada di databse sesuai dengan nama pada dataHapus
     param dataHapus = nama data yang ingin dihapus
     param database = dictionary dalam dictionary, bertindak sebagai database
     """
-    for data in database:
-        if dataHapus.upper() == data:
-            database.pop(data)
+    for data in gudangdata:
+        if datahapus.upper() == data:
+            gudangdata.pop(data)
             return True
 
 
@@ -248,17 +266,10 @@ def statistikprov():
     return [x for x in zip(listProv, listJumlah)]
 
 
-def keluar():
-    # TODO: IMPURE
-    kosong()
-    print("="*68+"\n{:^68s}\n".format("~Sampai jumpa, jangan lupa mencintai warisan budaya Indonesia!~")+"="*69)
-    exit()
-
-
-def lihatdata():
-    if len(database) != 0:
+def lihatdata(gudangdata):
+    if cekdata(gudangdata):
         pretty = pprint.PrettyPrinter()
-        return pretty.pprint(database)
+        return pretty.pprint(gudangdata)
     else:
         return "Database masih kosong"
 
@@ -270,25 +281,26 @@ def main():
         try:
             perintah = input("> Masukkan perintah: ").split()
 
+            "DAFTAR PERINTAH"
             if perintah[0].upper() == "IMPOR":
-                print(impordata(perintah))
+                print(impordata(perintah, database))
 
             elif perintah[0].upper() == "EKSPOR":
-                print(ekspordata(perintah))
+                print(ekspordata(perintah, database))
 
             elif perintah[0].upper() == "CARINAMA":
-                if cekdata():
-                    namaBudaya = parse(perintah)  # Masukan nama budaya yang ingin dicari ke variabel
-                    try:
-                        print(carinama(namaBudaya, database),sep="\n", end="\n")
-                    except KeyError:
-                        print("{} tidak ditemukan\n".format(namaBudaya))  # Kalau gaada, beritahu user
-                else:
-                    print("Database masih kosong, mohon import terlebih dahulu!\n")  # Beritahu user jika fatabase masih kosong
 
+                if cekdata(database):
+                    namaBudaya = parse(perintah)                                        # Masukan nama budaya yang ingin
+                    try:                                                                # dicari ke variabel
+                        print(carinama(namaBudaya, database), sep="\n", end="\n")
+                    except KeyError:
+                        print("{} tidak ditemukan\n".format(namaBudaya))                # Kalau gaada, beritahu user
+                else:
+                    print("Database masih kosong, mohon import terlebih dahulu!\n")
             elif perintah[0].upper() == "CARITIPE":
 
-                if cekdata():
+                if cekdata(database):
                     namaTipe = ' '.join(perintah[1:])
                     data = caritipe(namaTipe, database)
                     print(*data, sep="\n", end="\n")
@@ -297,16 +309,13 @@ def main():
                     print("Database masih kosong, mohon import terlebih dahulu!\n")
 
             elif perintah[0].upper() == "CARIPROV":
-                if cekdata():
+                if cekdata(database):
                     tipe = ' '.join(perintah[1:])
                     data = cariprov(tipe, database)
                     print(*data, sep="\n", end="\n")
                     print("*Ditemukan {} warisan budaya*\n".format(len(data)))
                 else:
                     print("Database masih kosong, mohon import terlebih dahulu!\n")
-
-            elif perintah[0].upper() == "LIHATREF":
-                bukalink(perintah)
 
             elif perintah[0].upper() == "TAMBAH":
                 masukan = parse(perintah).split(";;;")
@@ -326,6 +335,12 @@ def main():
                     print("{} dihapus\n".format(dataHapus))
                 else:
                     print("Tidak dapat menemukan {}\n".format(dataHapus))
+
+            elif perintah[0].upper() == "LIHATREF":
+                bukalink(perintah)
+
+            elif perintah[0].upper() == "LIHATDATA":
+                print("\n", lihatdata(database), "\n")
 
             elif perintah[0].upper() == "STAT":
                 print(statistik())
@@ -352,25 +367,29 @@ def main():
                     print('\t {:>3d}  {:<15s}{:^30d}'.format(i + 1, data[i][0], data[i][1]))
                 print(pemisah + "\n")
 
-            elif perintah[0].upper() == "KELUAR":
-                keluar()
-
             elif perintah[0].upper() == "PANDUAN":
                 print("\n", guide, "\n")
-
-            elif perintah[0].upper() == "LIHATDATA":
-                print("\n", lihatdata(), "\n")
 
             elif perintah[0].upper() == "BERSIHKAN":
                 kosong()
                 print(banner)
 
+            elif perintah[0].upper() == "KELUAR":
+                kosong()
+                print("=" * 68 + "\n{:^68s}\n".format(
+                    "~Sampai jumpa, jangan lupa mencintai warisan budaya Indonesia!~") + "=" * 69)
+                exit()
+
             else:
                 print("Terjadi kesalahan: Perintah tidak dikenal\n")
+
         except IndexError:
             pass
         except KeyboardInterrupt:
-            keluar()
+            kosong()
+            print("=" * 68 + "\n{:^68s}\n".format(
+                "~Sampai jumpa, jangan lupa mencintai warisan budaya Indonesia!~") + "=" * 69)
+            exit()
 
 
 if __name__ == "__main__":
