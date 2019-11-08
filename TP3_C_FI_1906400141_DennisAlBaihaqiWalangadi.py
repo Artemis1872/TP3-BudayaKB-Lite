@@ -98,7 +98,7 @@ def impordata(perintah, gudangdata):
                         gudangdata[baris[0].upper()] = {}                               # Buat Dictionary baru
                         counter += 1                                                    # Tambah jumlah baris
                         for data, tipe in zip(baris, kategori):                         # Isi database dengan data
-                            gudangdata[baris[0].upper()][tipe] = data                     # sesuai dengan kategori
+                            gudangdata[baris[0].upper()][tipe] = data                   # sesuai dengan kategori
             if counter == 0:
                 return "File yang anda buka tidak memiliki data"
             if warn:
@@ -149,7 +149,7 @@ def carinama(nama, gudangdata):
     else:
         for keys in gudangdata:
             terpilih.append(
-                ','.join([i for i in gudangdata[keys].values()]))   # Print semua jika data jika *
+                ','.join([i for i in gudangdata[keys].values()]))   # Ambil semua jika data jika *
     return terpilih
 
 
