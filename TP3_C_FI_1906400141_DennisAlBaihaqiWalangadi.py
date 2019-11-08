@@ -178,7 +178,7 @@ def cariprov(tipe, gudangdata):
     terpilih = []
     for data in gudangdata:
         if gudangdata[data]['provinsi'].upper() == tipe.upper():
-            print(','.join([i for i in gudangdata[data].values()]))
+            terpilih.append(','.join([i for i in gudangdata[data].values()]))
             continue
     return terpilih
 
@@ -249,7 +249,7 @@ def statistiktipe(gudangdata):
             if gudangdata[data]['tipe'].upper() == tipe.upper():
                 count += 1
         listJumlah.append(count)
-    return [x for x in zip(listTipe, listJumlah)]
+    return sorted([x for x in zip(listTipe, listJumlah)], key=lambda x: x[1])
 
 
 def statistikprov(gudangdata):
@@ -265,7 +265,7 @@ def statistikprov(gudangdata):
             if gudangdata[data]['provinsi'].upper() == prov.upper():
                 count += 1
         listJumlah.append(count)
-    return [x for x in zip(listProv, listJumlah)]
+    return sorted([x for x in zip(listProv, listJumlah)], key=lambda x: x[1])
 
 
 def lihatdata(gudangdata):
@@ -295,7 +295,7 @@ def main():
                 if cekdata(database):
                     namaBudaya = parse(perintah)                                        # Masukan nama budaya yang ingin
                     try:                                                                # dicari ke variabel
-                        print(carinama(namaBudaya, database), sep="\n", end="\n")
+                        print(*carinama(namaBudaya, database), sep="\n")
                     except KeyError:
                         print("{} tidak ditemukan\n".format(namaBudaya))                # Kalau gaada, beritahu user
                 else:
@@ -305,7 +305,7 @@ def main():
                 if cekdata(database):
                     namaTipe = ' '.join(perintah[1:])
                     data = caritipe(namaTipe, database)
-                    print(*data, sep="\n", end="\n")
+                    print(*data, sep="\n")
                     print('*Ditemukan {} {}*\n'.format(len(data), namaTipe))
                 else:
                     print("Database masih kosong, mohon import terlebih dahulu!\n")
