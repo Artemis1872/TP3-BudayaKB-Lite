@@ -4,6 +4,7 @@ import platform
 import random
 import pprint
 import webbrowser
+import matplotlib.pyplot as plt
 
 database = {}
 kategori = ["namawarisanbudaya", "tipe", "provinsi", "referenceurl"]
@@ -225,43 +226,43 @@ def hapus(datahapus, gudangdata):
             return True
 
 
-def bukalink(perintah):
-    link = ''.join([i for i in database[parse(perintah).upper()]['referenceurl']])
+def bukalink(perintah, gudangdata):
+    link = ''.join([i for i in gudangdata[parse(perintah).upper()]['referenceurl']])
     webbrowser.open_new_tab(link)
 
 
-def statistik():
-    return "Terdapat {} warisan budaya\n".format(len(database))
+def statistik(gudangdata):
+    return "Terdapat {} warisan budaya\n".format(len(gudangdata))
 
 
-def statistiktipe():
+def statistiktipe(gudangdata):
     listTipe = []
     listJumlah = []
-    for data in database:
-        if database[data]['tipe'] not in listTipe:
-            listTipe.append(database[data]['tipe'])
+    for data in gudangdata:
+        if gudangdata[data]['tipe'] not in listTipe:
+            listTipe.append(gudangdata[data]['tipe'])
             continue
 
     for tipe in listTipe:
         count = 0
-        for data in database:
-            if database[data]['tipe'].upper() == tipe.upper():
+        for data in gudangdata:
+            if gudangdata[data]['tipe'].upper() == tipe.upper():
                 count += 1
         listJumlah.append(count)
     return [x for x in zip(listTipe, listJumlah)]
 
 
-def statistikprov():
+def statistikprov(gudangdata):
     listProv = []
     listJumlah = []
-    for data in database:
-        if database[data]['provinsi'] not in listProv:
-            listProv.append(database[data]['provinsi'])
+    for data in gudangdata:
+        if gudangdata[data]['provinsi'] not in listProv:
+            listProv.append(gudangdata[data]['provinsi'])
             continue
     for prov in listProv:
         count = 0
-        for data in database:
-            if database[data]['provinsi'].upper() == prov.upper():
+        for data in gudangdata:
+            if gudangdata[data]['provinsi'].upper() == prov.upper():
                 count += 1
         listJumlah.append(count)
     return [x for x in zip(listProv, listJumlah)]
@@ -338,7 +339,7 @@ def main():
                     print("Tidak dapat menemukan {}\n".format(dataHapus))
 
             elif perintah[0].upper() == "LIHATREF":
-                bukalink(perintah)
+                bukalink(perintah, database)
 
             elif perintah[0].upper() == "LIHATDATA":
                 print("\n")
@@ -346,11 +347,11 @@ def main():
                 print("\n")
 
             elif perintah[0].upper() == "STAT":
-                print(statistik())
+                print(statistik(database))
 
             elif perintah[0].upper() == "STATTIPE":
                 pemisah = f"\t{'':=<43s}"
-                data = statistiktipe()
+                data = statistiktipe(database)
                 print("\n\tSTATISTIK DATA BERDASARKAN TIPE:")
                 print(pemisah)
                 print('\t {:<3s}  {:<15s}{:^30s}'.format('No', 'Tipe', 'Banyak Budaya'))
@@ -361,7 +362,7 @@ def main():
 
             elif perintah[0].upper() == "STATPROV":
                 pemisah = f"\t{'':=<43s}"
-                data = statistikprov()
+                data = statistikprov(database)
                 print("\n\tSTATISTIK DATA BERDASARKAN PROVINSI:")
                 print(pemisah)
                 print('\t {:<3s}  {:<15s}{:^30s}'.format('No', 'Provinsi', 'Banyak Budaya'))
@@ -393,6 +394,10 @@ def main():
             print("=" * 68 + "\n{:^68s}\n".format(
                 "~Sampai jumpa, jangan lupa mencintai warisan budaya Indonesia!~") + "=" * 69)
             exit()
+        except ModuleNotFoundError:
+            print("Matplotlib didatk ditemukan.\
+                  Mohon install library matplotlib menggunakan:\n\
+                  \tpip -m install matplotlib")
 
 
 if __name__ == "__main__":
