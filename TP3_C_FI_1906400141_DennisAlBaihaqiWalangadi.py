@@ -5,6 +5,8 @@ import random
 import pprint
 import webbrowser
 
+# TODO: Add colors
+
 database = {}
 
 kategori = ["namawarisanbudaya", "tipe", "provinsi", "referenceurl"]
@@ -16,38 +18,39 @@ salam = ['Peu na haba?', 'Hadia Duria?', 'Aha do kabar?', 'Camano kabo awak?', '
          'Pimen kabare?', 'Napa habar?', 'Kayapa habar pian?', 'Aga kareba?', 'Sapunapi gatrane?', 'Punapi gatre?',
          'Brembe kabar?', 'Ngumbe kabarne?', 'Meluk rungan?', 'Bune haba?', 'Nara gerotelo?']
 
-guide = """
-\t*DAFTAR PERINTAH:*
-\tIMPOR\t <file.csv>\tMengimpor data CSV ke Database, contoh: IMPOR file.csv
-\tEKSPOR\t <file.csv>\tMengekspor data Database ke CSV, contoh: EKSPOR file.csv
-\tCARINAMA <nama>\t\tMencari warisan budaya berdasarkan nama, contoh: CARINAMA Rendang
-\tCARITIPE <tipe>\t\tMencari warisan budaya berdasarkan tipe, contoh: CARITIPE Makanan
-\tCARIPROV <prov>\t\tMencari warisan budaya berdasarkan provinsi daerah asal, contoh: CARIPROV Bali
-\tTAMBAH\t <data>\t\tMenambahkan warisan budaya ke Database,\n\t\t\t\t  contoh: \
-TAMBAH Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id
-\tUPDATE\t <data>\t\tMemperbarui data warisan budaya,\n\t\t\t\t  contoh: \
-UPDATE Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id
-\tHAPUS\t <nama>\t\tMenghapus data warisan budaya, contoh: HAPUS Tari Saman
-\tLIHATREF <nama>\t\tMembuka referensi berdasarkan nama budaya, contoh: LIHATREF Rendang
-\tLIHATDATA \t\tmelihat data yang disimpan
-\tSTAT\t\t\tMenghitung banyaknya warisan budaya di Database
-\tSTATTIPE\t\tMenampilkan data di Database berdasarkan tipe
-\tSTATPROV\t\tMenampilkan data di Database berdasarkan provinsi
-\tPANDUAN\t\t\tMelihat panduan daftar perintah
-\tBERSIHKAN \t\tMembersihkan terminal
-\tKELUAR\t\t\tKeluar BudayaKB Lite
-"""
+guide = 'DAFTAR PERINTAH:' + \
+    '\tIMPOR\t <file.csv>\tMengimpor data CSV ke Database, contoh: IMPOR file.csv atau IMPOR C:\\folder\\file.csv\n' + \
+    '\tEKSPOR\t <file.csv>\tMengekspor data Database ke CSV, contoh: EKSPOR file.csv atau IMPOR C:\\folder\\file.csv\n'\
+    + '\tCARINAMA <nama>\t\tMencari warisan budaya berdasarkan nama, contoh: CARINAMA Rendang\n' + \
+    '\tCARITIPE <tipe>\t\tMencari warisan budaya berdasarkan tipe, contoh: CARITIPE Makanan\n' + \
+    '\tCARIPROV <prov>\t\tMencari warisan budaya berdasarkan provinsi daerah asal, contoh: CARIPROV Bali\n' + \
+    '\tTAMBAH\t <data>\t\tMenambahkan warisan budaya ke Database,\n\t\t\t\t\t\t  contoh: \
+    TAMBAH Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id\n' + \
+    '\tUPDATE\t <data>\t\tMemperbarui data warisan budaya,\n\t\t\t\t\t\t  contoh: \
+    UPDATE Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id\n' + \
+    '\tHAPUS\t <nama>\t\tMenghapus data warisan budaya, contoh: HAPUS Tari Saman\n' + \
+    '\tLIHATREF <nama>\t\tMembuka referensi berdasarkan nama budaya, contoh: LIHATREF Rendang\n' + \
+    '\tLIHATDATA \t\t\tmelihat data yang disimpan\n' + \
+    '\tSTAT\t\t\t\tMenghitung banyaknya warisan budaya di Database\n' + \
+    '\tSTATTIPE\t\t\tMenampilkan data di Database berdasarkan tipe\n' + \
+    '\tSTATPROV\t\t\tMenampilkan data di Database berdasarkan provinsi\n' + \
+    '\tPANDUAN\t\t\t\tMelihat panduan daftar perintah\n' + \
+    '\tBERSIHKAN \t\t\tMembersihkan terminal\n' + \
+    '\tKELUAR\t\t\t\tKeluar BudayaKB Lite\n'
 
-banner = f"{'':=<68}"+u"""\u001b[31m
-  ____            _                   _  ______    _     _ _       
- | __ ) _   _  __| | __ _ _   _  __ _| |/ / __ )  | |   (_) |_ ___ 
- |  _ \\| | | |/ _` |/ _` | | | |/ _` | ' /|  _ \\  | |   | | __/ _ \\ \u001b[0m
- | |_) | |_| | (_| | (_| | |_| | (_| | . \\| |_) | | |___| | ||  __/ 
- |____/ \\__,_|\\__,_|\\__,_|\\__, |\\__,_|_|\\_\\____/  |_____|_|\\__\\___| 
-                          |___/v0.0.2 - Dennis Al Baihaqi Walangadi\n"""+f"{'':=<68}"+"\n{:^68s}\n".format(
-    '~Kalau bukan kita yang melestarikan budaya, siapa lagi?~')+"{:^68s}\n".format(
-    random.choice(salam))+"{:^68s}".format(
-    "Ketik 'PANDUAN' untuk melihat daftar perintah.")+f"\n{'':=<68s}"
+separator = f"{'':=<68}"
+
+banner = separator + \
+        "\n  ____            _                   _  ______    _     _ _       " + \
+        "\n | __ ) _   _  __| | __ _ _   _  __ _| |/ / __ )  | |   (_) |_ ___ " + \
+        "\n |  _ \\| | | |/ _` |/ _` | | | |/ _` | ' /|  _ \\  | |   | | __/ _ \\ " + \
+        "\n | |_) | |_| | (_| | (_| | |_| | (_| | . \\| |_) | | |___| | ||  __/ " + \
+        "\n |____/ \\__,_|\\__,_|\\__,_|\\__, |\\__,_|_|\\_\\____/  |_____|_|\\__\\___| " + \
+        "\n                          |___/v0.0.3 - Dennis Al Baihaqi Walangadi\n" + \
+        separator + \
+        "\n{:^68s}\n".format('~Kalau bukan kita yang melestarikan budaya, siapa lagi?~') + \
+        "{:^68s}".format(random.choice(salam)) + \
+        "\n{:^68s}".format("Ketik 'PANDUAN' untuk melihat daftar perintah.")
 
 
 def kosong():
@@ -336,8 +339,8 @@ def main():
 
             elif perintah[0].upper() == "TAMBAH":
                 masukan = parse(perintah).split(";;;")
-                if tambah(masukan, database, kategori) == True:
-                    print("Ditemukan data yang serupa di database sebelumnya.\n"+
+                if tambah(masukan, database, kategori):
+                    print("Ditemukan data yang serupa di database sebelumnya.\n" +
                           "BudayaKB Lite akan mengubah seluruh data lama dengan data baru.")
                 print("{} ditambahkan\n".format(masukan[0].title()))
 
@@ -417,10 +420,6 @@ def main():
             print("=" * 68 + "\n{:^68s}\n".format(
                 "~Sampai jumpa, jangan lupa mencintai warisan budaya Indonesia!~") + "=" * 69)
             exit()
-        except ModuleNotFoundError:
-            print("Matplotlib didatk ditemukan.\
-                  Mohon install library matplotlib menggunakan:\n\
-                  \tpip -m install matplotlib")
 
 
 if __name__ == "__main__":
