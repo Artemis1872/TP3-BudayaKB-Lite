@@ -11,6 +11,8 @@ database = {}
 
 kategori = ["namawarisanbudaya", "tipe", "provinsi", "referenceurl"]
 
+sep = ";;;"
+
 salam = ['Peu na haba?', 'Hadia Duria?', 'Aha do kabar?', 'Camano kabo awak?', 'Cemane kabe?', 'Ba a kabanyo?',
          'Ape kaber?', 'Apo kabar?', 'Pedio Kabarnyo?', 'Dame pangabaran?', 'Api kabagh?', 'Nyow kabagh?',
          'Maye kabagh?', 'Pripun habare?', 'Kepriben kabare?', 'Kepriwe kabare?', 'Rika Kepriben kabare?',
@@ -339,19 +341,28 @@ def main():
                 else:
                     print("Database masih kosong, mohon import terlebih dahulu!\n")
 
+# TODO SEPARATOR
             elif perintah[0].upper() == "TAMBAH":
-                masukan = parse(perintah).split(";;;")
-                if tambah(masukan, database, kategori):
-                    print("Ditemukan data yang serupa di database sebelumnya.\n" +
-                          "BudayaKB Lite akan mengubah seluruh data lama dengan data baru.")
-                print("{} ditambahkan\n".format(masukan[0].title()))
+                parsed = parse(perintah)
+                if sep in parsed:
+                    masukan = parsed.split(sep)
+                    if tambah(masukan, database, kategori):
+                        print("Ditemukan data yang serupa di database sebelumnya.\n" +
+                              "BudayaKB Lite akan mengubah seluruh data lama dengan data baru.")
+                    print("{} ditambahkan\n".format(masukan[0].title()))
+                else:
+                    print("Gunakan {} sepagai pembatas antar data.".format(sep))
 
             elif perintah[0].upper() == "UPDATE":
-                dataBaru = parse(perintah).split(";;;")
-                if perbarui(dataBaru, database):
-                    print("{} diupdate\n".format(dataBaru[0].title()))
+                parsed = parse(perintah)
+                if sep in parsed:
+                    dataBaru = parsed.split(sep)
+                    if perbarui(dataBaru, database):
+                        print("{} diupdate\n".format(dataBaru[0].title()))
+                    else:
+                        print("Nama budaya yang anda cari tidak ditemukan!\n")
                 else:
-                    print("Nama budaya yang anda cari tidak ditemukan!\n")
+                    print("Gunakan {} sepagai pembatas antar data.".format(sep))
 
             elif perintah[0].upper() == "HAPUS":
                 dataHapus = parse(perintah)
