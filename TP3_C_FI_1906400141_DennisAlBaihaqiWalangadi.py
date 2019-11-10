@@ -1,8 +1,8 @@
 import csv
 import os
 import platform
-import random
 import pprint
+import random
 import webbrowser
 
 # TODO: Add colors
@@ -19,38 +19,40 @@ salam = ['Peu na haba?', 'Hadia Duria?', 'Aha do kabar?', 'Camano kabo awak?', '
          'Brembe kabar?', 'Ngumbe kabarne?', 'Meluk rungan?', 'Bune haba?', 'Nara gerotelo?']
 
 guide = 'DAFTAR PERINTAH:' + \
-    '\tIMPOR\t <file.csv>\tMengimpor data CSV ke Database, contoh: IMPOR file.csv atau IMPOR C:\\folder\\file.csv\n' + \
-    '\tEKSPOR\t <file.csv>\tMengekspor data Database ke CSV, contoh: EKSPOR file.csv atau IMPOR C:\\folder\\file.csv\n'\
-    + '\tCARINAMA <nama>\t\tMencari warisan budaya berdasarkan nama, contoh: CARINAMA Rendang\n' + \
-    '\tCARITIPE <tipe>\t\tMencari warisan budaya berdasarkan tipe, contoh: CARITIPE Makanan\n' + \
-    '\tCARIPROV <prov>\t\tMencari warisan budaya berdasarkan provinsi daerah asal, contoh: CARIPROV Bali\n' + \
-    '\tTAMBAH\t <data>\t\tMenambahkan warisan budaya ke Database,\n\t\t\t\t\t\t  contoh: \
-    TAMBAH Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id\n' + \
-    '\tUPDATE\t <data>\t\tMemperbarui data warisan budaya,\n\t\t\t\t\t\t  contoh: \
-    UPDATE Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id\n' + \
-    '\tHAPUS\t <nama>\t\tMenghapus data warisan budaya, contoh: HAPUS Tari Saman\n' + \
-    '\tLIHATREF <nama>\t\tMembuka referensi berdasarkan nama budaya, contoh: LIHATREF Rendang\n' + \
-    '\tLIHATDATA \t\t\tmelihat data yang disimpan\n' + \
-    '\tSTAT\t\t\t\tMenghitung banyaknya warisan budaya di Database\n' + \
-    '\tSTATTIPE\t\t\tMenampilkan data di Database berdasarkan tipe\n' + \
-    '\tSTATPROV\t\t\tMenampilkan data di Database berdasarkan provinsi\n' + \
-    '\tPANDUAN\t\t\t\tMelihat panduan daftar perintah\n' + \
-    '\tBERSIHKAN \t\t\tMembersihkan terminal\n' + \
-    '\tKELUAR\t\t\t\tKeluar BudayaKB Lite\n'
+        '\tIMPOR\t <file.csv>\tMengimpor data CSV ke Database, contoh: IMPOR file.csv atau \
+        IMPOR C:\\folder\\file.csv\n' + \
+        '\tEKSPOR\t <file.csv>\tMengekspor data Database ke CSV, contoh: EKSPOR file.csv atau \
+        IMPOR C:\\folder\\file.csv\n' \
+        + '\tCARINAMA <nama>\t\tMencari warisan budaya berdasarkan nama, contoh: CARINAMA Rendang\n' + \
+        '\tCARITIPE <tipe>\t\tMencari warisan budaya berdasarkan tipe, contoh: CARITIPE Makanan\n' + \
+        '\tCARIPROV <prov>\t\tMencari warisan budaya berdasarkan provinsi daerah asal, contoh: CARIPROV Bali\n' + \
+        '\tTAMBAH\t <data>\t\tMenambahkan warisan budaya ke Database,\n\t\t\t\t\t\t  contoh: \
+        TAMBAH Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id\n' + \
+        '\tUPDATE\t <data>\t\tMemperbarui data warisan budaya,\n\t\t\t\t\t\t  contoh: \
+        UPDATE Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id\n' + \
+        '\tHAPUS\t <nama>\t\tMenghapus data warisan budaya, contoh: HAPUS Tari Saman\n' + \
+        '\tLIHATREF <nama>\t\tMembuka referensi berdasarkan nama budaya, contoh: LIHATREF Rendang\n' + \
+        '\tLIHATDATA \t\t\tmelihat data yang disimpan\n' + \
+        '\tSTAT\t\t\t\tMenghitung banyaknya warisan budaya di Database\n' + \
+        '\tSTATTIPE\t\t\tMenampilkan data di Database berdasarkan tipe\n' + \
+        '\tSTATPROV\t\t\tMenampilkan data di Database berdasarkan provinsi\n' + \
+        '\tPANDUAN\t\t\t\tMelihat panduan daftar perintah\n' + \
+        '\tBERSIHKAN \t\t\tMembersihkan terminal\n' + \
+        '\tKELUAR\t\t\t\tKeluar BudayaKB Lite\n'
 
 separator = f"{'':=<68}"
 
 banner = separator + \
-        "\n  ____            _                   _  ______    _     _ _       " + \
-        "\n | __ ) _   _  __| | __ _ _   _  __ _| |/ / __ )  | |   (_) |_ ___ " + \
-        "\n |  _ \\| | | |/ _` |/ _` | | | |/ _` | ' /|  _ \\  | |   | | __/ _ \\ " + \
-        "\n | |_) | |_| | (_| | (_| | |_| | (_| | . \\| |_) | | |___| | ||  __/ " + \
-        "\n |____/ \\__,_|\\__,_|\\__,_|\\__, |\\__,_|_|\\_\\____/  |_____|_|\\__\\___| " + \
-        "\n                          |___/v0.0.3 - Dennis Al Baihaqi Walangadi\n" + \
-        separator + \
-        "\n{:^68s}\n".format('~Kalau bukan kita yang melestarikan budaya, siapa lagi?~') + \
-        "{:^68s}".format(random.choice(salam)) + \
-        "\n{:^68s}".format("Ketik 'PANDUAN' untuk melihat daftar perintah.")
+         "\n  ____            _                   _  ______    _     _ _       " + \
+         "\n | __ ) _   _  __| | __ _ _   _  __ _| |/ / __ )  | |   (_) |_ ___ " + \
+         "\n |  _ \\| | | |/ _` |/ _` | | | |/ _` | ' /|  _ \\  | |   | | __/ _ \\ " + \
+         "\n | |_) | |_| | (_| | (_| | |_| | (_| | . \\| |_) | | |___| | ||  __/ " + \
+         "\n |____/ \\__,_|\\__,_|\\__,_|\\__, |\\__,_|_|\\_\\____/  |_____|_|\\__\\___| " + \
+         "\n                          |___/v0.0.3 - Dennis Al Baihaqi Walangadi\n" + \
+         separator + \
+         "\n{:^68s}\n".format('~Kalau bukan kita yang melestarikan budaya, siapa lagi?~') + \
+         "{:^68s}".format(random.choice(salam)) + \
+         "\n{:^68s}".format("Ketik 'PANDUAN' untuk melihat daftar perintah.")
 
 
 def kosong():
@@ -58,10 +60,10 @@ def kosong():
     Mengosongkan terminal
     """
 
-    if platform.system() == "Windows":          # Cek apakah program berjalan di Windows
-        os.system('cls')                        # Jika ya, eksekusi perintah 'cls'
-    else:                                       # Jika bukan, asumsi Linux
-        os.system('clear')                      # Eksekusi perintah 'clear'
+    if platform.system() == "Windows":  # Cek apakah program berjalan di Windows
+        os.system('cls')  # Jika ya, eksekusi perintah 'cls'
+    else:  # Jika bukan, asumsi Linux
+        os.system('clear')  # Eksekusi perintah 'clear'
 
 
 def parse(perintah):
@@ -94,22 +96,22 @@ def impordata(perintah, gudangdata):
             return "Tipe file tidak dikenal, mohon impor file dengan ekstensi CSV\n"
         else:
             warn = False
-            with open(parse(perintah), "r") as file:                                    # Buka file yang ada di argument
-                bukaFile = csv.reader(file)                                             # Baca menggunakan csv.reader
-                counter = 0                                                             # Hitung jumlah baris
+            with open(parse(perintah), "r") as file:  # Buka file yang ada di argument
+                bukaFile = csv.reader(file)  # Baca menggunakan csv.reader
+                counter = 0  # Hitung jumlah baris
                 for baris in bukaFile:
-                    if len(baris) != 0:                                                 # Cek apakah baris kosong
-                        if (baris[0].upper() in gudangdata) and (warn == False):        # Beri peringatan jika terdapat
-                            warn = True                                                 # duplikat
-                        gudangdata[baris[0].upper()] = {}                               # Buat Dictionary baru
-                        counter += 1                                                    # Tambah jumlah baris
-                        for data, tipe in zip(baris, kategori):                         # Isi database dengan data
-                            gudangdata[baris[0].upper()][tipe] = data                   # sesuai dengan kategori
+                    if len(baris) != 0:  # Cek apakah baris kosong
+                        if (baris[0].upper() in gudangdata) and (warn == False):  # Beri peringatan jika terdapat
+                            warn = True  # duplikat
+                        gudangdata[baris[0].upper()] = {}  # Buat Dictionary baru
+                        counter += 1  # Tambah jumlah baris
+                        for data, tipe in zip(baris, kategori):  # Isi database dengan data
+                            gudangdata[baris[0].upper()][tipe] = data  # sesuai dengan kategori
             if counter == 0:
                 return "File yang anda buka tidak memiliki data"
             if warn:
-                return "BudayaKB mendeteksi adanya duplikat dalam database atau file yang anda impor\n"\
-                       "Baris terbawah atau data terbaru dianggap data paling relevan.\n"\
+                return "BudayaKB mendeteksi adanya duplikat dalam database atau file yang anda impor\n" \
+                       "Baris terbawah atau data terbaru dianggap data paling relevan.\n" \
                        "Terimpor {} baris\n".format(counter)
             return "Terimpor {} baris\n".format(counter)
 
@@ -127,18 +129,18 @@ def ekspordata(perintah, gudangdata):
         judulEkspor = perintah[1]
         baris = []
         counter = 0
-        if ".csv" not in judulEkspor:                                   # Cek apakah file beformat csv
-            judulEkspor = judulEkspor+".csv"
-        for i in gudangdata:                                            # Siapkan semua isi data setiap key di database
-            baris.append(gudangdata[i])                                 # ke sebuah list
-        with open(judulEkspor, "w") as fileEkspor:                      # Buka file
+        if ".csv" not in judulEkspor:  # Cek apakah file beformat csv
+            judulEkspor = judulEkspor + ".csv"
+        for i in gudangdata:  # Siapkan semua isi data setiap key di database
+            baris.append(gudangdata[i])  # ke sebuah list
+        with open(judulEkspor, "w") as fileEkspor:  # Buka file
             ekspor = csv.DictWriter(fileEkspor, delimiter=",", fieldnames=kategori)  # Menggunakan library CSV
             for data in baris:
                 counter += 1
-                ekspor.writerow(data)                               # Print setiap data di dalam list baris
-        return "Terekspor {} baris\n".format(counter)               # Print jumlah baris
+                ekspor.writerow(data)  # Print setiap data di dalam list baris
+        return "Terekspor {} baris\n".format(counter)  # Print jumlah baris
     except IOError:
-        return "Terjadi IOError, mohon cek kembali\n"               # Jaga-jaga kalau ada masalah di harddisk/ssd
+        return "Terjadi IOError, mohon cek kembali\n"  # Jaga-jaga kalau ada masalah di harddisk/ssd
 
 
 def carinama(nama, gudangdata):
@@ -151,11 +153,11 @@ def carinama(nama, gudangdata):
     terpilih = []
     if nama != '*':
         terpilih.append(','.join(
-                [i for i in gudangdata[nama.upper()].values()]))    # Ambil data berdasarkan key nama
+            [i for i in gudangdata[nama.upper()].values()]))  # Ambil data berdasarkan key nama
     else:
         for keys in gudangdata:
             terpilih.append(','.join(
-                [i for i in gudangdata[keys].values()]))   # Ambil semua jika data jika *
+                [i for i in gudangdata[keys].values()]))  # Ambil semua jika data jika *
     return terpilih
 
 
@@ -304,12 +306,12 @@ def main():
             elif perintah[0].upper() == "CARINAMA":
 
                 if cekdata(database):
-                    namaBudaya = parse(perintah)                                        # Masukan nama budaya yang ingin
-                    try:                                                                # dicari ke variabel
+                    namaBudaya = parse(perintah)  # Masukan nama budaya yang ingin
+                    try:  # dicari ke variabel
                         print(*carinama(namaBudaya, database), sep="\n")
                         print("\n")
                     except KeyError:
-                        print("{} tidak ditemukan\n".format(namaBudaya.title()))        # Kalau gaada, beritahu user
+                        print("{} tidak ditemukan\n".format(namaBudaya.title()))  # Kalau gaada, beritahu user
                 else:
                     print("Database masih kosong, mohon import terlebih dahulu!\n")
             elif perintah[0].upper() == "CARITIPE":
@@ -384,7 +386,7 @@ def main():
                 print(pemisah)
                 for i in range(len(data)):  # Memasukkan data tabel
                     print('\t {:>3d}  {:<15s}{:^30d}'.format(i + 1, data[i][0], data[i][1]))
-                print(pemisah+"\n")
+                print(pemisah + "\n")
 
             elif perintah[0].upper() == "STATPROV":
                 pemisah = f"\t{'':=<43s}"
