@@ -6,7 +6,6 @@ import random
 import webbrowser
 
 # TODO: Implement colors via class
-# TODO: Implement logs via list
 
 database = {}
 
@@ -21,12 +20,12 @@ salam = ['Peu na haba?', 'Hadia Duria?', 'Aha do kabar?', 'Camano kabo awak?', '
          'Pimen kabare?', 'Napa habar?', 'Kayapa habar pian?', 'Aga kareba?', 'Sapunapi gatrane?', 'Punapi gatre?',
          'Brembe kabar?', 'Ngumbe kabarne?', 'Meluk rungan?', 'Bune haba?', 'Nara gerotelo?']
 
-guide = 'DAFTAR PERINTAH:' + \
+guide = u'\33[1m' + 'DAFTAR PERINTAH:' + u'\33[0m' + \
         '\tIMPOR\t <file.csv>\tMengimpor data CSV ke Database, contoh: IMPOR file.csv atau \
         IMPOR C:\\folder\\file.csv\n' + \
         '\tEKSPOR\t <file.csv>\tMengekspor data Database ke CSV, contoh: EKSPOR file.csv atau \
-        IMPOR C:\\folder\\file.csv\n' \
-        + '\tCARINAMA <nama>\t\tMencari warisan budaya berdasarkan nama, contoh: CARINAMA Rendang\n' + \
+        IMPOR C:\\folder\\file.csv\n' + \
+        '\tCARINAMA <nama>\t\tMencari warisan budaya berdasarkan nama, contoh: CARINAMA Rendang\n' + \
         '\tCARITIPE <tipe>\t\tMencari warisan budaya berdasarkan tipe, contoh: CARITIPE Makanan\n' + \
         '\tCARIPROV <prov>\t\tMencari warisan budaya berdasarkan provinsi daerah asal, contoh: CARIPROV Bali\n' + \
         '\tTAMBAH\t <data>\t\tMenambahkan warisan budaya ke Database,\n\t\t\t\t\t\t  contoh: \
@@ -40,21 +39,22 @@ guide = 'DAFTAR PERINTAH:' + \
         '\tSTATTIPE\t\t\tMenampilkan data di Database berdasarkan tipe\n' + \
         '\tSTATPROV\t\t\tMenampilkan data di Database berdasarkan provinsi\n' + \
         '\tPANDUAN\t\t\t\tMelihat panduan daftar perintah\n' + \
+        '\tLOG\t\t\t\t Melihat log aktivitas\n' + \
         '\tBERSIHKAN \t\t\tMembersihkan terminal\n' + \
         '\tKELUAR\t\t\t\tKeluar BudayaKB Lite\n'
 
 separator = f"{'':=<68}"
 
-banner = separator + \
+banner = separator + u'\33[31m'\
          "\n  ____            _                   _  ______    _     _ _       " + \
          "\n | __ ) _   _  __| | __ _ _   _  __ _| |/ / __ )  | |   (_) |_ ___ " + \
-         "\n |  _ \\| | | |/ _` |/ _` | | | |/ _` | ' /|  _ \\  | |   | | __/ _ \\ " + \
+         "\n |  _ \\| | | |/ _` |/ _` | | | |/ _` | ' /|  _ \\  | |   | | __/ _ \\ " + u'\33[0m' + \
          "\n | |_) | |_| | (_| | (_| | |_| | (_| | . \\| |_) | | |___| | ||  __/ " + \
          "\n |____/ \\__,_|\\__,_|\\__,_|\\__, |\\__,_|_|\\_\\____/  |_____|_|\\__\\___| " + \
          "\n                          |___/v0.0.3 - Dennis Al Baihaqi Walangadi\n" + \
          separator + \
-         "\n{:^68s}\n".format('~Kalau bukan kita yang melestarikan budaya, siapa lagi?~') + \
-         "{:^68s}".format(random.choice(salam)) + \
+         "\n{:^68s}\n".format('~Kalau bukan kita yang melestarikan budaya, siapa lagi?~') + u'\33[7m' + \
+         "{:^68s}".format(random.choice(salam)) + u'\33[0m' + \
          "\n{:^68s}".format("Ketik 'PANDUAN' untuk melihat daftar perintah.")
 
 
@@ -113,10 +113,10 @@ def impordata(perintah, gudangdata):
             if counter == 0:
                 return "File yang anda buka tidak memiliki data"
             if warn:
-                return "BudayaKB mendeteksi adanya duplikat dalam database atau file yang anda impor\n" \
-                       "Baris terbawah atau data terbaru dianggap data paling relevan.\n" \
-                       "Terimpor {} baris\n".format(counter)
-            return "Terimpor {} baris\n".format(counter)
+                return "BudayaKB mendeteksi adanya duplikat dalam database atau file yang anda impor" \
+                       "Baris terbawah atau data terbaru dianggap data paling relevan." \
+                       "Terimpor {} baris".format(counter)
+            return "Terimpor {} baris".format(counter)
 
     except FileNotFoundError:
         return "Error: File tidak dapat ditemukan.\n"
@@ -248,7 +248,7 @@ def bukalink(perintah, gudangdata):
 
 
 def statistik(gudangdata):
-    return "Terdapat {} warisan budaya\n".format(len(gudangdata))
+    return "Terdapat {} warisan budaya".format(len(gudangdata))
 
 
 def statistiktipe(gudangdata):
@@ -302,11 +302,12 @@ def main():
             perintah = input("> Masukkan perintah: ").split()
 
             if perintah[0].upper() == "IMPOR":
-                print(impordata(perintah, database))
+                # TODO: Color fix
+                print(u'\33[42m (i) ' + impordata(perintah, database) + u' \33[0m')
                 log.append("Terimpor {}".format(perintah[0]))
 
             elif perintah[0].upper() == "EKSPOR":
-                print(ekspordata(perintah, database))
+                print(u'\33[42m (i)' + ekspordata(perintah, database) + u' \33[0m')
                 log.append("Terekspor {}".format(perintah[0]))
 
             elif perintah[0].upper() == "CARINAMA":
@@ -317,10 +318,10 @@ def main():
                         print("\n")
                         log.append("CARINAMA {} ditemukan".format(namaBudaya.title()))
                     except KeyError:
-                        print("{} tidak ditemukan\n".format(namaBudaya.title()))  # Kalau gaada, beritahu user
+                        print(u'\33[41m (!) {} tidak ditemukan \33[0m \n'.format(namaBudaya.title()))
                         log.append("CARINAMA {} tidak ditemukan".format(namaBudaya.title()))
                 else:
-                    print("Database masih kosong, mohon import terlebih dahulu!\n")
+                    print(u'\33[41m (!) Database masih kosong, mohon import terlebih dahulu! \33[0m\n')
                     log.append("CARINAMA, Error database kosong")
 
             elif perintah[0].upper() == "CARITIPE":
@@ -329,13 +330,14 @@ def main():
                     data = caritipe(namaTipe, database)
                     if len(data) != 0:
                         print(*data, sep="\n")
-                        print('*Ditemukan {} {}*\n'.format(len(data), namaTipe.lower()))
+                        print(u'\33[42m (i) *Ditemukan {} {}* \33[0m\n'.format(len(data), namaTipe.lower()))
                         log.append('CARITIPE ditemukan {}'.format(namaTipe.title()))
                     else:
-                        print("Tidak ditemukan tipe budaya {} di dalam database\n".format(namaTipe.upper()))
+                        print(u"\33[41m (!) Tidak ditemukan tipe budaya {} di dalam database \33[0m\n".format(
+                            namaTipe.upper()))
                         log.append('CARITIPE tidak ditemukan {}'.format(namaTipe.title()))
                 else:
-                    print("Database masih kosong, mohon import terlebih dahulu!\n")
+                    print(u'\33[41m (!) ' + "Database masih kosong, mohon import terlebih dahulu! \33[0m\n")
                     log.append("CARINAMA {}, Error database kosong".format(perintah[0].title()))
 
             elif perintah[0].upper() == "CARIPROV":
@@ -344,13 +346,13 @@ def main():
                     data = cariprov(prov, database)
                     if len(data) != 0:
                         print(*data, sep="\n")
-                        print("\n*Ditemukan {} warisan budaya*\n".format(len(data)))
+                        print(u"\n\33[42m (i) *Ditemukan {} warisan budaya* \33[0m\n".format(len(data)))
                         log.append('CARIPROV {} ditemukan'.format(prov.title()))
                     else:
-                        print("Tidak ditemukan budaya dari provinsi {} di dalam database\n".format(prov.title()))
+                        print(u"\33[41m (!) Tidak ditemukan budaya dari provinsi {} di dalam database \33[0m\n".format(prov.title()))
                         log.append('CARIPROV {} tidak ditemukan'.format(prov.title()))
                 else:
-                    print("Database masih kosong, mohon import terlebih dahulu!\n")
+                    print(u"\33[41m (!) Database masih kosong, mohon import terlebih dahulu! \33[0m\n")
                     log.append("CARINAMA {}, Error database kosong".format(perintah[0].title()))
 
             elif perintah[0].upper() == "TAMBAH":
@@ -358,12 +360,12 @@ def main():
                 if sep in parsed:
                     masukan = parsed.split(sep)
                     if tambah(masukan, database, kategori):
-                        print("Ditemukan data yang serupa di database sebelumnya.\n" +
-                              "BudayaKB Lite akan mengubah seluruh data lama dengan data baru.")
-                    print("{} ditambahkan\n".format(masukan[0].title()))
+                        print(u"\33[43m (!) Ditemukan data yang serupa di database sebelumnya. \33[0m\n" +
+                              u"\33[43m BudayaKB Lite akan mengubah seluruh data lama dengan data baru. \33[0m\n")
+                    print(u"\33[42m (i) {} ditambahkan \33[0m\n".format(masukan[0].title()))
                     log.append('TAMBAH {}'.format(parsed))
                 else:
-                    print("Gunakan {} sepagai pembatas antar data.".format(sep))
+                    print(u"\33[43m (!) Gunakan {} sepagai pembatas antar data. \33[0m\n".format(sep))
                     log.append('TAMBAH failed seperator: {}'.format(parsed))
 
             elif perintah[0].upper() == "UPDATE":
@@ -371,32 +373,32 @@ def main():
                 if sep in parsed:
                     dataBaru = parsed.split(sep)
                     if perbarui(dataBaru, database):
-                        print("{} diupdate\n".format(dataBaru[0].title()))
+                        print(u"\33[42m (i) {} diupdate \33[0m\n".format(dataBaru[0].title()))
                         log.append('UPDATE {}: {}'.format(dataBaru[0], parsed))
                     else:
-                        print("Nama budaya yang anda cari tidak ditemukan!\n")
+                        print(u"\33[41m (!) Nama budaya yang anda cari tidak ditemukan! \33[0m\n")
                         log.append('UPDATE tidak ditemukan: {}'.format(parsed))
                 else:
-                    print("Gunakan {} sepagai pembatas antar data.".format(sep))
+                    print(u"\33[43m (!) Gunakan {} sepagai pembatas antar data. \33[0m\n".format(sep))
                     log.append('TAMBAH failed seperator: {}'.format(parsed))
 
             elif perintah[0].upper() == "HAPUS":
                 dataHapus = parse(perintah)
                 if hapus(dataHapus, database):
-                    print("{} dihapus\n".format(dataHapus.title()))
+                    print(u"\33[42m (i) {} dihapus \33[0m\n".format(dataHapus.title()))
                     log.append('HAPUS {}'.format(dataHapus))
                 else:
-                    print("Tidak dapat menemukan {}\n".format(dataHapus))
+                    print(u"\33[41m (!) Tidak dapat menemukan {} \33[0m\n".format(dataHapus))
                     log.append('HAPUS, data {} tidak ditemukan'.format(dataHapus))
 
             elif perintah[0].upper() == "LIHATREF":
                 parsed = parse(perintah)
                 try:
                     bukalink(perintah, database)
-                    print("Membuka browser\n")
+                    print("\33[42m (i) Membuka browser \33[0m\n")
                     log.append('LIHATREF {}'.format(parsed))
                 except KeyError:
-                    print("Tidak dapat menemukan {}".format(parsed))
+                    print("\33[41m (!) Tidak dapat menemukan {} \33[0m\n".format(parsed))
                     log.append('LIHATREF gagal, data {} tidak ditemukan'.format(parsed))
 
             elif perintah[0].upper() == "LIHATDATA":
@@ -406,11 +408,11 @@ def main():
                     print("\n")
                     log.append("LIHATDATA")
                 else:
-                    print("Database masih kosong.")
+                    print("\33[41m (!) Database masih kosong. \33[0m")
                     log.append("LIHATDATA gagal, data masih kosong")
 
             elif perintah[0].upper() == "STAT":
-                print(statistik(database))
+                print("\33[42m (i) " + statistik(database) + u"\33[0m")
                 log.append("STAT")
 
             elif perintah[0].upper() == "STATTIPE":
