@@ -136,11 +136,11 @@ def ekspordata(perintah, gudangdata):
         for i in gudangdata:  # Siapkan semua isi data setiap key di database
             baris.append(gudangdata[i])  # ke sebuah list
         with open(judulEkspor, "w") as fileEkspor:  # Buka file
-            ekspor = csv.DictWriter(fileEkspor, delimiter=",", fieldnames=kategori)  # Menggunakan library CSV
+            ekspor = csv.DictWriter(fileEkspor, delimiter=",", fieldnames=kategori, lineterminator='\n')  # Menggunakan library CSV
             for data in baris:
                 counter += 1
                 ekspor.writerow(data)  # Print setiap data di dalam list baris
-        return "Terekspor {} baris\n".format(counter)  # Print jumlah baris
+        return "Terekspor {} baris di {} \n".format(counter, judulEkspor)  # Print jumlah baris
     except IOError:
         return "Terjadi IOError, mohon cek kembali\n"  # Jaga-jaga kalau ada masalah di harddisk/ssd
 
@@ -294,11 +294,11 @@ def lihatdata(gudangdata):
 def main():
     kosong()
     print(banner)
+    print(separator)
     while True:
         try:
             perintah = input("> Masukkan perintah: ").split()
 
-            "DAFTAR PERINTAH"
             if perintah[0].upper() == "IMPOR":
                 print(impordata(perintah, database))
 
