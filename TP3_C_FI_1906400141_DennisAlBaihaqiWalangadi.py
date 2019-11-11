@@ -5,7 +5,8 @@ import pprint
 import random
 import webbrowser
 
-# TODO: Add colors
+# TODO: Implement colors via class
+# TODO: Implement logs via list
 
 database = {}
 
@@ -292,6 +293,7 @@ def lihatdata(gudangdata):
 
 
 def main():
+    log = []
     kosong()
     print(banner)
     print(separator)
@@ -301,33 +303,40 @@ def main():
 
             if perintah[0].upper() == "IMPOR":
                 print(impordata(perintah, database))
+                log.append("Terimpor {}".format(perintah[0]))
 
             elif perintah[0].upper() == "EKSPOR":
                 print(ekspordata(perintah, database))
+                log.append("Terekspor {}".format(perintah[0]))
 
             elif perintah[0].upper() == "CARINAMA":
-
                 if cekdata(database):
                     namaBudaya = parse(perintah)  # Masukan nama budaya yang ingin
                     try:  # dicari ke variabel
                         print(*carinama(namaBudaya, database), sep="\n")
                         print("\n")
+                        log.append("CARINAMA {} ditemukan".format(namaBudaya.title()))
                     except KeyError:
                         print("{} tidak ditemukan\n".format(namaBudaya.title()))  # Kalau gaada, beritahu user
+                        log.append("CARINAMA {} tidak ditemukan".format(namaBudaya.title()))
                 else:
                     print("Database masih kosong, mohon import terlebih dahulu!\n")
-            elif perintah[0].upper() == "CARITIPE":
+                    log.append("CARINAMA, Error database kosong")
 
+            elif perintah[0].upper() == "CARITIPE":
                 if cekdata(database):
                     namaTipe = ' '.join(perintah[1:])
                     data = caritipe(namaTipe, database)
                     if len(data) != 0:
                         print(*data, sep="\n")
                         print('*Ditemukan {} {}*\n'.format(len(data), namaTipe.lower()))
+                        log.append('CARITIPE ditemukan {}'.format(namaTipe.title()))
                     else:
                         print("Tidak ditemukan tipe budaya {} di dalam database\n".format(namaTipe.upper()))
+                        log.append('CARITIPE tidak ditemukan {}'.format(namaTipe.title()))
                 else:
                     print("Database masih kosong, mohon import terlebih dahulu!\n")
+                    log.append("CARINAMA {}, Error database kosong".format(perintah[0].title()))
 
             elif perintah[0].upper() == "CARIPROV":
                 if cekdata(database):
@@ -336,12 +345,14 @@ def main():
                     if len(data) != 0:
                         print(*data, sep="\n")
                         print("\n*Ditemukan {} warisan budaya*\n".format(len(data)))
+                        log.append('CARIPROV {} ditemukan'.format(prov.title()))
                     else:
                         print("Tidak ditemukan budaya dari provinsi {} di dalam database\n".format(prov.title()))
+                        log.append('CARIPROV {} tidak ditemukan'.format(prov.title()))
                 else:
                     print("Database masih kosong, mohon import terlebih dahulu!\n")
+                    log.append("CARINAMA {}, Error database kosong".format(perintah[0].title()))
 
-# TODO SEPARATOR
             elif perintah[0].upper() == "TAMBAH":
                 parsed = parse(perintah)
                 if sep in parsed:
@@ -350,8 +361,10 @@ def main():
                         print("Ditemukan data yang serupa di database sebelumnya.\n" +
                               "BudayaKB Lite akan mengubah seluruh data lama dengan data baru.")
                     print("{} ditambahkan\n".format(masukan[0].title()))
+                    log.append('TAMBAH {}'.format(parsed))
                 else:
                     print("Gunakan {} sepagai pembatas antar data.".format(sep))
+                    log.append('TAMBAH failed seperator: {}'.format(parsed))
 
             elif perintah[0].upper() == "UPDATE":
                 parsed = parse(perintah)
@@ -359,34 +372,46 @@ def main():
                     dataBaru = parsed.split(sep)
                     if perbarui(dataBaru, database):
                         print("{} diupdate\n".format(dataBaru[0].title()))
+                        log.append('UPDATE {}: {}'.format(dataBaru[0], parsed))
                     else:
                         print("Nama budaya yang anda cari tidak ditemukan!\n")
+                        log.append('UPDATE tidak ditemukan: {}'.format(parsed))
                 else:
                     print("Gunakan {} sepagai pembatas antar data.".format(sep))
+                    log.append('TAMBAH failed seperator: {}'.format(parsed))
 
             elif perintah[0].upper() == "HAPUS":
                 dataHapus = parse(perintah)
                 if hapus(dataHapus, database):
                     print("{} dihapus\n".format(dataHapus.title()))
+                    log.append('HAPUS {}'.format(dataHapus))
                 else:
                     print("Tidak dapat menemukan {}\n".format(dataHapus))
+                    log.append('HAPUS, data {} tidak ditemukan'.format(dataHapus))
 
             elif perintah[0].upper() == "LIHATREF":
+                parsed = parse(perintah)
                 try:
                     bukalink(perintah, database)
+                    print("Membuka browser\n")
+                    log.append('LIHATREF {}'.format(parsed))
                 except KeyError:
-                    print("Tidak dapat menemukan {}".format(parse(perintah)))
+                    print("Tidak dapat menemukan {}".format(parsed))
+                    log.append('LIHATREF gagal, data {} tidak ditemukan'.format(parsed))
 
             elif perintah[0].upper() == "LIHATDATA":
                 if len(database) != 0:
                     print("\n")
                     lihatdata(database)
                     print("\n")
+                    log.append("LIHATDATA")
                 else:
                     print("Database masih kosong.")
+                    log.append("LIHATDATA gagal, data masih kosong")
 
             elif perintah[0].upper() == "STAT":
                 print(statistik(database))
+                log.append("STAT")
 
             elif perintah[0].upper() == "STATTIPE":
                 pemisah = f"\t{'':=<43s}"
@@ -398,6 +423,7 @@ def main():
                 for i in range(len(data)):  # Memasukkan data tabel
                     print('\t {:>3d}  {:<15s}{:^30d}'.format(i + 1, data[i][0], data[i][1]))
                 print(pemisah + "\n")
+                log.append("STATTIPE")
 
             elif perintah[0].upper() == "STATPROV":
                 pemisah = f"\t{'':=<43s}"
@@ -409,13 +435,19 @@ def main():
                 for i in range(len(data)):  # Memasukkan data tabel
                     print('\t {:>3d}  {:<15s}{:^30d}'.format(i + 1, data[i][0], data[i][1]))
                 print(pemisah + "\n")
+                log.append("STATPROV")
 
             elif perintah[0].upper() == "PANDUAN":
                 print("\n", guide, "\n")
+                log.append("PANDUAN")
+
+            elif perintah[0].upper() == "LOG":
+                print(log,sep="\n")
 
             elif perintah[0].upper() == "BERSIHKAN":
                 kosong()
                 print(banner)
+                log.append("BERSIHKAN")
 
             elif perintah[0].upper() == "KELUAR":
                 kosong()
@@ -425,6 +457,7 @@ def main():
 
             else:
                 print("Terjadi kesalahan: Perintah tidak dikenal\n")
+                log.append("Perintah tidak dikenal")
 
         except IndexError:
             pass
