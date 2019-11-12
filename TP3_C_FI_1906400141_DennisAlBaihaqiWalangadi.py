@@ -18,28 +18,24 @@ salam = ['Peu na haba?', 'Hadia Duria?', 'Aha do kabar?', 'Camano kabo awak?', '
          'Pimen kabare?', 'Napa habar?', 'Kayapa habar pian?', 'Aga kareba?', 'Sapunapi gatrane?', 'Punapi gatre?',
          'Brembe kabar?', 'Ngumbe kabarne?', 'Meluk rungan?', 'Bune haba?', 'Nara gerotelo?']
 
-guide = u'\33[1m' + 'DAFTAR PERINTAH:' + u'\33[0m' + \
-        '\tIMPOR\t <file.csv>\tMengimpor data CSV ke Database, contoh: IMPOR file.csv atau \
-        IMPOR C:\\folder\\file.csv\n' + \
-        '\tEKSPOR\t <file.csv>\tMengekspor data Database ke CSV, contoh: EKSPOR file.csv atau \
-        IMPOR C:\\folder\\file.csv\n' + \
+guide = u'\t\33[1m' + 'DAFTAR PERINTAH:' + u'\33[0m\n' + \
+        '\tIMPOR\t <file.csv>\tMengimpor data CSV ke Database, contoh: IMPOR file.csv atau IMPOR C:\\folder\\file.csv\n' + \
+        '\tEKSPOR\t <file.csv>\tMengekspor data Database ke CSV, contoh: EKSPOR file.csv atau IMPOR C:\\folder\\file.csv\n' + \
         '\tCARINAMA <nama>\t\tMencari warisan budaya berdasarkan nama, contoh: CARINAMA Rendang\n' + \
         '\tCARITIPE <tipe>\t\tMencari warisan budaya berdasarkan tipe, contoh: CARITIPE Makanan\n' + \
         '\tCARIPROV <prov>\t\tMencari warisan budaya berdasarkan provinsi daerah asal, contoh: CARIPROV Bali\n' + \
-        '\tTAMBAH\t <data>\t\tMenambahkan warisan budaya ke Database,\n\t\t\t\t\t\t  contoh: \
-        TAMBAH Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id\n' + \
-        '\tUPDATE\t <data>\t\tMemperbarui data warisan budaya,\n\t\t\t\t\t\t  contoh: \
-        UPDATE Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id\n' + \
+        '\tTAMBAH\t <data>\t\tMenambahkan warisan budaya ke Database,\n\t\t\t\t  contoh: TAMBAH Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id\n' + \
+        '\tUPDATE\t <data>\t\tMemperbarui data warisan budaya,\n\t\t\t\t  contoh: UPDATE Tari Legong;;;Tarian;;;Bali;;;www.baliprov.go.id\n' + \
         '\tHAPUS\t <nama>\t\tMenghapus data warisan budaya, contoh: HAPUS Tari Saman\n' + \
         '\tLIHATREF <nama>\t\tMembuka referensi berdasarkan nama budaya, contoh: LIHATREF Rendang\n' + \
-        '\tLIHATDATA \t\t\tmelihat data yang disimpan\n' + \
-        '\tSTAT\t\t\t\tMenghitung banyaknya warisan budaya di Database\n' + \
-        '\tSTATTIPE\t\t\tMenampilkan data di Database berdasarkan tipe\n' + \
-        '\tSTATPROV\t\t\tMenampilkan data di Database berdasarkan provinsi\n' + \
-        '\tPANDUAN\t\t\t\tMelihat panduan daftar perintah\n' + \
-        '\tLOG\t\t\t\t Melihat log aktivitas\n' + \
-        '\tBERSIHKAN \t\t\tMembersihkan terminal\n' + \
-        '\tKELUAR\t\t\t\tKeluar BudayaKB Lite\n'
+        '\tLIHATDATA \t\tmelihat data yang disimpan\n' + \
+        '\tSTAT\t\t\tMenghitung banyaknya warisan budaya di Database\n' + \
+        '\tSTATTIPE\t\tMenampilkan data di Database berdasarkan tipe\n' + \
+        '\tSTATPROV\t\tMenampilkan data di Database berdasarkan provinsi\n' + \
+        '\tPANDUAN\t\t\tMelihat panduan daftar perintah\n' + \
+        '\tLOG\t\t\tMelihat log aktivitas\n' + \
+        '\tBERSIHKAN \t\tMembersihkan terminal\n' + \
+        '\tKELUAR\t\t\tKeluar BudayaKB Lite\n'
 
 separator = f"{'':=<68}"
 
@@ -74,7 +70,7 @@ def parse(perintah):
     :param: perintah: berupa list dari hasil split perintah
     """
 
-    return ' '.join(perintah[1:])
+    return ' '.join(perintah[1:]) # Return seluruh string selain perintah
 
 
 def cekdata(gudangdata):
@@ -97,32 +93,34 @@ def impordata(perintah, gudangdata):
     """
 
     try:
-        if "csv" not in perintah[1].split("."):
+        if "csv" not in perintah[1].split("."):     # Jika file tidak terdapat ekstensi csv, jangan terima
             return u"\33[43m (!) Tipe file tidak dikenal, mohon impor file dengan ekstensi CSV \33[0m"
         else:
             warn = False
-            with open(parse(perintah), "r") as file:  # Buka file yang ada di argument
-                bukaFile = csv.reader(file)  # Baca menggunakan csv.reader
-                counter = 0  # Hitung jumlah baris
+            with open(parse(perintah), "r") as file:    # Buka file yang ada di argument
+                bukaFile = csv.reader(file)             # Baca menggunakan csv.reader
+                counter = 0                             # Hitung jumlah baris
 
                 for baris in bukaFile:
                     if len(baris) != 0:  # Cek apakah baris kosong
 
-                        if (baris[0].upper() in gudangdata) and (warn == False):  # Beri peringatan jika terdapat
-                            warn = True  # duplikat
-                        gudangdata[baris[0].upper()] = {}  # Buat Dictionary baru
-                        counter += 1  # Tambah jumlah baris
+                        if (baris[0].upper() in gudangdata) and (warn == False):    # Beri peringatan jika terdapat
+                            warn = True                                             # duplikat
+                        gudangdata[baris[0].upper()] = {}   # Buat Dictionary baru
+                        counter += 1                        # Tambah hitungan jumlah baris
 
-                        for data, tipe in zip(baris, kategori):  # Isi database dengan data
+                        for data, tipe in zip(baris, kategori):        # Isi database dengan data
                             gudangdata[baris[0].upper()][tipe] = data  # sesuai dengan kategori
-            if counter == 0:
+
+            if counter == 0:    # Kalau tidak ada line yang di import
                 return u"\33[43m (!) File yang anda buka tidak memiliki data \33[0m"
 
-            if warn:
+            if warn:            # Peringatan jika tedapat duplikat
                 return u"\33[43m (!) BudayaKB mendeteksi adanya duplikat dalam database atau file yang anda \
                     impor \33[0m" + u"\n\33[43m Baris terbawah atau data terbaru dianggap data paling relevan. \
                     \33[0m\n" + u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
 
+            # Return banyak baris yang dibaca
             return u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
 
     except FileNotFoundError:
@@ -140,11 +138,11 @@ def ekspordata(perintah, gudangdata):
         judulEkspor = perintah[1]
         baris = []
         counter = 0
-        if ".csv" not in judulEkspor:  # Cek apakah file beformat csv
-            judulEkspor = judulEkspor + ".csv"
+        if ".csv" not in judulEkspor:           # Cek apakah file beformat csv
+            judulEkspor = judulEkspor + ".csv"  # Jika tidak, beri ekstensi csv
 
-        for i in gudangdata:  # Siapkan semua isi data setiap key di database
-            baris.append(gudangdata[i])  # ke sebuah list
+        for i in gudangdata:                # Siapkan semua isi data setiap key di database
+            baris.append(gudangdata[i])     # ke sebuah list
 
         with open(judulEkspor, "w") as fileEkspor:  # Buka file
             ekspor = csv.DictWriter(fileEkspor, delimiter=",", fieldnames=kategori, lineterminator='\n')
@@ -155,6 +153,7 @@ def ekspordata(perintah, gudangdata):
 
         return u"\33[42m\33[30m (i) Terekspor {} baris di {} \33[0m\n".format(counter, judulEkspor)
 
+    #Kalau terjadi IOError, jaga-jaga
     except IOError:
         return u"\33[41m (!) Terjadi IOError, mohon cek kembali \33[0m\n"
 
@@ -162,20 +161,20 @@ def ekspordata(perintah, gudangdata):
 def carinama(nama, gudangdata):
     """
     Mencari isi database berdasarkan value nama budaya
-    return sebuah list
     :param: nama = Nama budaya
     :param: gudangdata = dictionary dalam dictionary, bertindak sebagai database
+    :return: list
     """
 
     terpilih = []
     if nama != '*':
         terpilih.append(','.join(
-            [i for i in gudangdata[nama.upper()].values()]))  # Ambil data berdasarkan key nama
+            [i for i in gudangdata[nama.upper()].values()]))  # Ambil values berdasarkan key nama, lalu append
 
     else:
         for keys in gudangdata:
             terpilih.append(','.join(
-                [i for i in gudangdata[keys].values()]))  # Ambil semua jika data jika *
+                [i for i in gudangdata[keys].values()]))  # Ambil semua jika data jika argumen berupa '*'
 
     return terpilih
 
@@ -183,16 +182,16 @@ def carinama(nama, gudangdata):
 def caritipe(tipe, gudangdata):
     """
     Mencari isi database berdasarkan value tipe budaya
-    return list semua data yang sesuai
     :param: tipe = Nama tipe
     :param: gudangdata = dictionary dalam dictionary, bertindak sebagai database
+    :return: list
     """
 
     terpilih = []
 
     for data in gudangdata:
-        if gudangdata[data]['tipe'].upper() == tipe.upper():
-            terpilih.append(','.join([i for i in gudangdata[data].values()]))
+        if gudangdata[data]['tipe'].upper() == tipe.upper():                    # Kalau tipe budaya sesuai yang diminta
+            terpilih.append(','.join([i for i in gudangdata[data].values()]))   # Append ke sebuah list
             continue
 
     return terpilih
@@ -201,15 +200,15 @@ def caritipe(tipe, gudangdata):
 def cariprov(tipe, gudangdata):
     """
     Mencari isi database berdasarkan value provinsi asal budaya
-    return list semua data yang sesuai
     :param: tipe = Nama provinsi
     :param: gudangdata = dictionary dalam dictionary, bertindak sebagai database
+    :return: list
     """
 
     terpilih = []
     for data in gudangdata:
-        if gudangdata[data]['provinsi'].upper() == tipe.upper():
-            terpilih.append(','.join([i for i in gudangdata[data].values()]))
+        if gudangdata[data]['provinsi'].upper() == tipe.upper():                # Kalau provinsi sesuai dengan diminta
+            terpilih.append(','.join([i for i in gudangdata[data].values()]))   # Append ke sebuah list
             continue
 
     return terpilih
@@ -218,9 +217,10 @@ def cariprov(tipe, gudangdata):
 def tambah(datamasuk, gudangdata, kelas):
     """
     Menambahkan data kedalan database, sesuai dengan kategori
-    input = berupa list
-    gudangdata = dictionary dalam dictionary, bertindak sebagai database
-    kategori = kategori sesuai urutan csv
+    :param: datamasuk = berupa list
+    :param: gudangdata = dictionary dalam dictionary, bertindak sebagai database
+    :param: kategori = kategori sesuai urutan csv
+    :return: bool
     """
 
     warn = False
@@ -580,6 +580,11 @@ def main():
                 "~Sampai jumpa, jangan lupa mencintai warisan budaya Indonesia!~") + "=" * 69)
             exit()
 
+        except EOFError:
+            kosong()
+            print("=" * 68 + "\n{:^68s}\n".format(
+                "~Sampai jumpa, jangan lupa mencintai warisan budaya Indonesia!~") + "=" * 69)
+            exit()
 
 if __name__ == "__main__":
     main()
