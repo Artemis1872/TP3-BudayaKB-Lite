@@ -94,7 +94,7 @@ def impordata(perintah, gudangdata):
 
     try:
         if "csv" not in perintah[1].split("."):     # Jika file tidak terdapat ekstensi csv, jangan terima
-            return u"\33[43m (!) Tipe file tidak dikenal, mohon impor file dengan ekstensi CSV \33[0m"
+            return u"\33[43m\33[30m (!) Tipe file tidak dikenal, mohon impor file dengan ekstensi CSV \33[0m"
         else:
             warn = False
             with open(parse(perintah), "r") as file:    # Buka file yang ada di argument
@@ -113,18 +113,18 @@ def impordata(perintah, gudangdata):
                             gudangdata[baris[0].upper()][tipe] = data  # sesuai dengan kategori
 
             if counter == 0:    # Kalau tidak ada line yang di import
-                return u"\33[43m (!) File yang anda buka tidak memiliki data \33[0m"
+                return u"\33[43m\33[30m (!) File yang anda buka tidak memiliki data \33[0m"
 
             if warn:            # Peringatan jika tedapat duplikat
-                return u"\33[43m (!) BudayaKB mendeteksi adanya duplikat dalam database atau file yang anda \
-                    impor \33[0m" + u"\n\33[43m Baris terbawah atau data terbaru dianggap data paling relevan. \
+                return u"\33[43m\33[30m (!) BudayaKB mendeteksi adanya duplikat dalam database atau file yang anda \
+                    impor \33[0m" + u"\n\33[43m\33[30m Baris terbawah atau data terbaru dianggap data paling relevan. \
                     \33[0m\n" + u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
 
             # Return banyak baris yang dibaca
             return u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
 
     except FileNotFoundError:
-        return "\33[43m (!) Error: File tidak dapat ditemukan. "
+        return "\33[43m\33[30m (!) Error: File tidak dapat ditemukan. "
 
 
 def ekspordata(perintah, gudangdata):
@@ -153,7 +153,7 @@ def ekspordata(perintah, gudangdata):
 
         return u"\33[42m\33[30m (i) Terekspor {} baris di {} \33[0m\n".format(counter, judulEkspor)
 
-    #Kalau terjadi IOError, jaga-jaga
+    # Kalau terjadi IOError, jaga-jaga
     except IOError:
         return u"\33[41m (!) Terjadi IOError, mohon cek kembali \33[0m\n"
 
@@ -446,14 +446,14 @@ def main():
                     masukan = parsed.split(sep)
 
                     if tambah(masukan, database, kategori):
-                        print(u"\33[43m (!) Ditemukan data yang serupa di database sebelumnya. \33[0m\n" +
-                              u"\33[43m BudayaKB Lite akan mengubah seluruh data lama dengan data baru. \33[0m\n")
+                        print(u"\33[43m\33[30m (!) Ditemukan data yang serupa di database sebelumnya. \33[0m\n" +
+                              u"\33[43m\33[30m BudayaKB Lite akan mengubah seluruh data lama dengan data baru. \33[0m\n")
 
                     print(u"\33[42m\33[30m (i) {} ditambahkan \33[0m\n".format(masukan[0].title()))
                     log.append('TAMBAH {}'.format(parsed))
 
                 else:
-                    print(u"\33[43m (!) Gunakan {} sepagai pembatas antar data. \33[0m\n".format(sep))
+                    print(u"\33[43m\33[30m (!) Gunakan {} sepagai pembatas antar data. \33[0m\n".format(sep))
                     log.append('TAMBAH failed seperator: {}'.format(parsed))
 
             # UPDATE
@@ -470,7 +470,7 @@ def main():
                         log.append('UPDATE tidak ditemukan: {}'.format(parsed))
 
                 else:
-                    print(u"\33[43m (!) Gunakan {} sepagai pembatas antar data. \33[0m\n".format(sep))
+                    print(u"\33[43m\33[30m (!) Gunakan {} sepagai pembatas antar data. \33[0m\n".format(sep))
                     log.append('TAMBAH failed seperator: {}'.format(parsed))
 
             # HAPUS
