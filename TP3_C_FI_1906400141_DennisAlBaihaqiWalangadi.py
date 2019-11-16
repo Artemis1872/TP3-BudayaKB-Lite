@@ -225,10 +225,10 @@ def tambah(datamasuk, gudangdata, kelas):
 
     warn = False
 
-    if datamasuk[0].upper() in gudangdata:
+    if datamasuk[0].upper() in gudangdata:                  # Jika data yang dimasukan sudah ada, beri pringatan
         warn = True
 
-    gudangdata[datamasuk[0].upper()] = {}
+    gudangdata[datamasuk[0].upper()] = {}                   # Buat key baru yang berisi sebuah dictionary baru
     for data, tipe in zip(datamasuk, kelas):
         gudangdata[datamasuk[0].upper()][tipe] = data
 
@@ -240,13 +240,13 @@ def perbarui(newdata, gudangdata):
     Mengecek apakah ada data tersebut di atabase, jika ada maka perbarui
     newData = data yang akan baru
     gudangdata = dictionary dalam dictionary, bertindak sebagai database
-    return True/False
+    return bool
     """
 
     index = 0
     for data in gudangdata:
         if gudangdata[data]["namawarisanbudaya"].upper() == newdata[0].upper():
-
+            # Jika ditemukan data yang sama, perbarui setiap isinya dengan data baru
             for tipe in kategori:
                 gudangdata[data][tipe] = newdata[index]
                 index += 1
@@ -269,8 +269,8 @@ def hapus(datahapus, gudangdata):
 
     for data in gudangdata:
         if datahapus.upper() == data:
+            # Jika ditemukan data yang sama, pop data tersebut
             gudangdata.pop(data)
-
             return True
 
 
@@ -282,7 +282,7 @@ def bukalink(perintah, gudangdata):
     """
 
     link = ''.join([i for i in gudangdata[parse(perintah).upper()]["referenceurl"]])
-
+    # Ambil link yang terdapat didalam database sesuai dengan nama budaya, lalu buka di webbrowser
     return webbrowser.open_new_tab(link)
 
 
@@ -293,7 +293,7 @@ def statistik(gudangdata):
     :return: int
     """
 
-    return "Terdapat {} warisan budaya".format(len(gudangdata))
+    return "Terdapat {} warisan budaya".format(len(gudangdata))  # Banyaknya data
 
 
 def statistiktipe(gudangdata):
@@ -306,11 +306,13 @@ def statistiktipe(gudangdata):
     listTipe = []
     listJumlah = []
     for data in gudangdata:
+        # Memasukkan setiap tipe data di database
         if gudangdata[data]["tipe"] not in listTipe:
             listTipe.append(gudangdata[data]["tipe"])
             continue
 
     for tipe in listTipe:
+        # Menghitung setiap tipe data di database
         count = 0
         for data in gudangdata:
             if gudangdata[data]["tipe"].upper() == tipe.upper():
@@ -330,10 +332,13 @@ def statistikprov(gudangdata):
     listProv = []
     listJumlah = []
     for data in gudangdata:
+        # Memasukkan setiap nama provinsi di database
         if gudangdata[data]["provinsi"] not in listProv:
             listProv.append(gudangdata[data]["provinsi"])
             continue
+
     for prov in listProv:
+        # Menghitung banyak frekuansi setiap provinsi di dalam database
         count = 0
         for data in gudangdata:
             if gudangdata[data]["provinsi"].upper() == prov.upper():
@@ -351,6 +356,7 @@ def lihatdata(gudangdata):
     """
 
     if cekdata(gudangdata):
+        # Print database dengan formatting rapi
         pretty = pprint.PrettyPrinter()
         return pretty.pprint(gudangdata)
 
@@ -369,7 +375,7 @@ def main():
     print(banner)       # Print banner
 
     while True:
-        print(separator)
+        print(separator) # Buat separator di setiap perintah
 
         try:
             perintah = input("> Masukkan perintah: ").split()
@@ -404,7 +410,7 @@ def main():
             # CARITIPE
             elif perintah[0].upper() == "CARITIPE":
                 if cekdata(database):
-                    namaTipe = " ".join(perintah[1:])
+                    namaTipe = parse(perintah)
                     data = caritipe(namaTipe, database)
 
                     if len(data) != 0:
@@ -423,7 +429,7 @@ def main():
             # CARIPROV
             elif perintah[0].upper() == "CARIPROV":
                 if cekdata(database):
-                    prov = " ".join(perintah[1:])
+                    prov = parse(perintah)
                     data = cariprov(prov, database)
 
                     if len(data) != 0:
@@ -546,15 +552,18 @@ def main():
 
             # PANDUAN
             elif perintah[0].upper() == "PANDUAN":
+                # Print sebuah panduan
                 print("\n", guide, "\n")
                 log.append("PANDUAN")
 
             # LOG
             elif perintah[0].upper() == "LOG":
+                # Print histori perintah
                 print(log, sep="\n")
 
             # BERSIHKAN
             elif perintah[0].upper() == "BERSIHKAN":
+                # Kosongkan terminal
                 kosong()
                 print(banner)
                 log.append("BERSIHKAN")
@@ -574,17 +583,12 @@ def main():
         except IndexError:
             pass
 
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, EOFError) as e:
             kosong()
             print("=" * 68 + "\n{:^68s}\n".format(
                 "~Sampai jumpa, jangan lupa mencintai warisan budaya Indonesia!~") + "=" * 69)
             exit()
 
-        except EOFError:
-            kosong()
-            print("=" * 68 + "\n{:^68s}\n".format(
-                "~Sampai jumpa, jangan lupa mencintai warisan budaya Indonesia!~") + "=" * 69)
-            exit()
 
 if __name__ == "__main__":
     main()
