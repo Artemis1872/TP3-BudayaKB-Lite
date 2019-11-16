@@ -47,8 +47,8 @@ banner = separator + u"\33[31m" + \
          "\n |____/ \\__,_|\\__,_|\\__,_|\\__, |\\__,_|_|\\_\\____/  |_____|_|\\__\\___| " + \
          "\n                          |___/v0.0.4 - Dennis Al Baihaqi Walangadi " + "\33[0m\n" + \
          separator + \
-         "\n{:^68s}\n".format("~Kalau bukan kita yang melestarikan budaya, siapa lagi?~") + u" \33[7m" + \
-         "{:^68s}".format(random.choice(salam)) + u" \33[0m" + \
+         "\n{:^68s}\n".format("~Kalau bukan kita yang melestarikan budaya, siapa lagi?~") + u"\33[7m" + \
+         "{:^68s}".format(random.choice(salam)) + u"\33[0m" + \
          "\n{:^68s}".format("Ketik 'PANDUAN' untuk melihat daftar perintah.")
 
 
@@ -116,9 +116,9 @@ def impordata(perintah, gudangdata):
                 return u" \33[43m\33[30m (!) File yang anda buka tidak memiliki data \33[0m"
 
             if warn:            # Peringatan jika tedapat duplikat
-                return u" \33[43m\33[30m (!) BudayaKB mendeteksi adanya duplikat dalam database atau file yang anda \
-                    impor \33[0m" + u" \n\33[43m\33[30m Baris terbawah atau data terbaru dianggap data paling relevan. \
-                    \33[0m\n" + u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
+                return u" \33[43m\33[30m (!) BudayaKB mendeteksi adanya duplikat dalam database atau file yang anda impor \33[0m" +\
+                       u"\n \33[43m\33[30m Baris terbawah atau data terbaru dianggap data paling relevan.\33[0m\n" \
+                       + u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
 
             # Return banyak baris yang dibaca
             return u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
