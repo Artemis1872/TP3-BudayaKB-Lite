@@ -33,7 +33,7 @@ guide = u" \t\33[1m" + "DAFTAR PERINTAH:" + u" \33[0m\n" + \
         "\tSTATTIPE\t\tMenampilkan data di Database berdasarkan tipe\n" + \
         "\tSTATPROV\t\tMenampilkan data di Database berdasarkan provinsi\n" + \
         "\tPANDUAN\t\t\tMelihat panduan daftar perintah\n" + \
-        "\tLOG\t\t\tMelihat log aktivitas\n" + \
+        "\tLOG\t\t\tMelihat histori perintah\n" + \
         "\tBERSIHKAN \t\tMembersihkan terminal\n" + \
         "\tKELUAR\t\t\tKeluar BudayaKB Lite\n"
 
@@ -124,7 +124,7 @@ def impordata(perintah, gudangdata):
             return u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
 
     except FileNotFoundError:
-        return "\33[43m\33[30m (!) Error: File tidak dapat ditemukan. "
+        return "\33[43m\33[30m (!) Error: File tidak dapat ditemukan. \33[0m\n"
 
 
 def ekspordata(perintah, gudangdata):
@@ -383,12 +383,12 @@ def main():
             # IMPOR
             if perintah[0].upper() == "IMPOR":
                 print(impordata(perintah, database))
-                log.append("Terimpor {}".format(perintah[0]))
+                log.append("Terimpor {}".format(perintah[1]))
 
             # EKSPOR
             elif perintah[0].upper() == "EKSPOR":
                 print(ekspordata(perintah, database))
-                log.append("Terekspor {}".format(perintah[0]))
+                log.append("Terekspor {}".format(perintah[1]))
 
             # CARINAMA
             elif perintah[0].upper() == "CARINAMA":
@@ -559,7 +559,7 @@ def main():
             # LOG
             elif perintah[0].upper() == "LOG":
                 # Print histori perintah
-                print(log, sep="\n")
+                print(*log, sep="\n")
 
             # BERSIHKAN
             elif perintah[0].upper() == "BERSIHKAN":
@@ -570,6 +570,7 @@ def main():
 
             # KELUAR
             elif perintah[0].upper() == "KELUAR":
+                # Kosongkan terminal dan beri salam
                 kosong()
                 print("=" * 68 + "\n{:^68s}\n".format(
                     "~Sampai jumpa, jangan lupa mencintai warisan budaya Indonesia!~") + "=" * 69)
@@ -577,6 +578,7 @@ def main():
 
             # INVALID COMMAND
             else:
+                # Kalau perintah belum ada
                 print(u" \33[41m (!) Terjadi kesalahan: Perintah tidak dikenal \33[0m\n")
                 log.append("Perintah tidak dikenal")
 
@@ -584,6 +586,7 @@ def main():
             pass
 
         except (KeyboardInterrupt, EOFError) as e:
+            # Kalau ada yang iseng utak atik
             kosong()
             print("=" * 68 + "\n{:^68s}\n".format(
                 "~Sampai jumpa, jangan lupa mencintai warisan budaya Indonesia!~") + "=" * 69)
