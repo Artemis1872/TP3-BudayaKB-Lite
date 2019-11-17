@@ -70,7 +70,7 @@ def parse(perintah):
     :param: perintah: berupa list dari hasil split perintah
     """
 
-    return " ".join(perintah[1:]) # Return seluruh string selain perintah
+    return " ".join(perintah[1:])  # Return seluruh string selain perintah
 
 
 def cekdata(gudangdata):
