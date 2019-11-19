@@ -20,6 +20,7 @@ salam = ["Peu na haba?", "Hadia Duria?", "Aha do kabar?", "Camano kabo awak?", "
 
 guide = u" \t\33[1m" + "DAFTAR PERINTAH:" + u" \33[0m\n" + \
         "\tIMPOR\t <file.csv>\tMengimpor data CSV ke Database, contoh: IMPOR file.csv atau IMPOR C:\\folder\\file.csv\n" + \
+        "\tXIMPOR\t <file.csv>\tExclusive Import: Seperti IMPOR tetapi tidak overwrite data yang sudah ada\n" + \
         "\tEKSPOR\t <file.csv>\tMengekspor data Database ke CSV, contoh: EKSPOR file.csv atau IMPOR C:\\folder\\file.csv\n" + \
         "\tCARINAMA <nama>\t\tMencari warisan budaya berdasarkan nama, contoh: CARINAMA Rendang\n" + \
         "\tCARITIPE <tipe>\t\tMencari warisan budaya berdasarkan tipe, contoh: CARITIPE Makanan\n" + \
@@ -35,6 +36,7 @@ guide = u" \t\33[1m" + "DAFTAR PERINTAH:" + u" \33[0m\n" + \
         "\tPANDUAN\t\t\tMelihat panduan daftar perintah\n" + \
         "\tLOG\t\t\tMelihat histori perintah\n" + \
         "\tBERSIHKAN \t\tMembersihkan terminal\n" + \
+        "\tHAPUSDATABASE \t\tMenghapus seluruh isi database\n" + \
         "\tKELUAR\t\t\tKeluar BudayaKB Lite\n"
 
 separator = f"{'':=<68}"
@@ -55,6 +57,7 @@ banner = separator + u"\33[31m" + \
 def kosong():
     """
     Mengosongkan terminal
+    :return: None
     """
 
     if platform.system() == "Windows":  # Cek apakah program berjalan di Windows
@@ -93,32 +96,67 @@ def impordata(perintah, gudangdata):
     """
 
     try:
-        if "csv" not in perintah[1].split("."):     # Jika file tidak terdapat ekstensi csv, jangan terima
+        if "csv" not in perintah[1].split("."):  # Jika file tidak terdapat ekstensi csv, jangan terima
             return u" \33[43m\33[30m (!) Tipe file tidak dikenal, mohon impor file dengan ekstensi CSV \33[0m"
         else:
             warn = False
-            with open(parse(perintah), "r") as file:    # Buka file yang ada di argument
-                bukaFile = csv.reader(file)             # Baca menggunakan csv.reader
-                counter = 0                             # Hitung jumlah baris
+            with open(parse(perintah), "r") as file:  # Buka file yang ada di argument
+                bukaFile = csv.reader(file)  # Baca menggunakan csv.reader
+                counter = 0  # Hitung jumlah baris
 
                 for baris in bukaFile:
                     if len(baris) != 0:  # Cek apakah baris kosong
 
-                        if (baris[0].upper() in gudangdata) and (warn == False):    # Beri peringatan jika terdapat
-                            warn = True                                             # duplikat
-                        gudangdata[baris[0].upper()] = {}   # Buat Dictionary baru
-                        counter += 1                        # Tambah hitungan jumlah baris
+                        if (baris[0].upper() in gudangdata) and (warn == False):  # Beri peringatan jika terdapat
+                            warn = True  # duplikat
+                        gudangdata[baris[0].upper()] = {}  # Buat Dictionary baru
+                        counter += 1  # Tambah hitungan jumlah baris
 
-                        for data, tipe in zip(baris, kategori):        # Isi database dengan data
+                        for data, tipe in zip(baris, kategori):  # Isi database dengan data
                             gudangdata[baris[0].upper()][tipe] = data  # sesuai dengan kategori
 
-            if counter == 0:    # Kalau tidak ada line yang di import
+            if counter == 0:  # Kalau tidak ada line yang di import
                 return u" \33[43m\33[30m (!) File yang anda buka tidak memiliki data \33[0m"
 
-            if warn:            # Peringatan jika tedapat duplikat
-                return u" \33[43m\33[30m (!) BudayaKB mendeteksi adanya duplikat dalam database atau file yang anda impor \33[0m" +\
-                       u"\n \33[43m\33[30m Baris terbawah atau data terbaru dianggap data paling relevan.\33[0m\n" \
-                       + u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
+            if warn:  # Peringatan jika tedapat duplikat
+                return u" \33[43m\33[30m (!) BudayaKB mendeteksi adanya duplikat dalam database atau file yang anda impor \33[0m" + \
+                       u"\n \33[43m\33[30m     Baris terbawah atau data terbaru dianggap data paling relevan.\33[0m" + \
+                       u"\n \33[44m\33[37m /!\\ Pertimbakan menggunakan Exclusive Impor (XIMPOR) agar tidak overwrite\33[0m" + \
+                       u"\n \33[44m\33[37m     Lihat PANDUAN untuk pelajari lebih lanjut\33[0m\n" + \
+                       u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
+
+            # Return banyak baris yang dibaca
+            return u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
+
+    except FileNotFoundError:
+        return "\33[43m\33[30m (!) Error: File tidak dapat ditemukan. \33[0m\n"
+
+
+def ximpordata(perintah, gudangdata):
+    try:
+        if "csv" not in perintah[1].split("."):  # Jika file tidak terdapat ekstensi csv, jangan terima
+            return u" \33[43m\33[30m (!) Tipe file tidak dikenal, mohon impor file dengan ekstensi CSV \33[0m"
+        else:
+            with open(parse(perintah), "r") as file:  # Buka file yang ada di argument
+                bukaFile = csv.reader(file)  # Baca menggunakan csv.reader
+                counter = 0  # Hitung jumlah baris
+                newdata = []
+                for baris in bukaFile:
+                    if len(baris) != 0:  # Cek apakah baris kosong
+
+                        if baris[0].upper() in gudangdata:
+                            pass
+                        else:
+                            newdata.append(baris[0].upper())
+                            gudangdata[baris[0].upper()] = {}
+                            counter += 1
+
+                for databaru in newdata:
+                    for data, tipe in zip(baris, kategori):
+                        gudangdata[databaru.upper()][tipe] = data  # sesuai dengan kategori
+
+            if counter == 0:  # Kalau tidak ada line yang di import
+                return u" \33[43m\33[30m (!) File yang anda buka tidak memiliki data \33[0m"
 
             # Return banyak baris yang dibaca
             return u" \33[42m\33[30m (i) Terimpor {} baris \33[0m\n".format(counter)
@@ -138,11 +176,11 @@ def ekspordata(perintah, gudangdata):
         judulEkspor = perintah[1]
         baris = []
         counter = 0
-        if ".csv" not in judulEkspor:           # Cek apakah file beformat csv
+        if ".csv" not in judulEkspor:  # Cek apakah file beformat csv
             judulEkspor = judulEkspor + ".csv"  # Jika tidak, beri ekstensi csv
 
-        for i in gudangdata:                # Siapkan semua isi data setiap key di database
-            baris.append(gudangdata[i])     # ke sebuah list
+        for i in gudangdata:  # Siapkan semua isi data setiap key di database
+            baris.append(gudangdata[i])  # ke sebuah list
 
         with open(judulEkspor, "w") as fileEkspor:  # Buka file
             ekspor = csv.DictWriter(fileEkspor, delimiter=",", fieldnames=kategori, lineterminator="\n")
@@ -190,8 +228,8 @@ def caritipe(tipe, gudangdata):
     terpilih = []
 
     for data in gudangdata:
-        if gudangdata[data]["tipe"].upper() == tipe.upper():                    # Kalau tipe budaya sesuai yang diminta
-            terpilih.append(",".join([i for i in gudangdata[data].values()]))   # Append ke sebuah list
+        if gudangdata[data]["tipe"].upper() == tipe.upper():  # Kalau tipe budaya sesuai yang diminta
+            terpilih.append(",".join([i for i in gudangdata[data].values()]))  # Append ke sebuah list
             continue
 
     return terpilih
@@ -207,8 +245,8 @@ def cariprov(tipe, gudangdata):
 
     terpilih = []
     for data in gudangdata:
-        if gudangdata[data]["provinsi"].upper() == tipe.upper():                # Kalau provinsi sesuai dengan diminta
-            terpilih.append(",".join([i for i in gudangdata[data].values()]))   # Append ke sebuah list
+        if gudangdata[data]["provinsi"].upper() == tipe.upper():  # Kalau provinsi sesuai dengan diminta
+            terpilih.append(",".join([i for i in gudangdata[data].values()]))  # Append ke sebuah list
             continue
 
     return terpilih
@@ -225,12 +263,16 @@ def tambah(datamasuk, gudangdata, kelas):
 
     warn = False
 
-    if datamasuk[0].upper() in gudangdata:                  # Jika data yang dimasukan sudah ada, beri pringatan
-        warn = True
+    if datamasuk[0] == '':
+        pass
 
-    gudangdata[datamasuk[0].upper()] = {}                   # Buat key baru yang berisi sebuah dictionary baru
-    for data, tipe in zip(datamasuk, kelas):
-        gudangdata[datamasuk[0].upper()][tipe] = data
+    else:
+        if datamasuk[0].upper() in gudangdata:  # Jika data yang dimasukan sudah ada, beri pringatan
+            warn = True
+
+        gudangdata[datamasuk[0].upper()] = {}  # Buat key baru yang berisi sebuah dictionary baru
+        for data, tipe in zip(datamasuk, kelas):
+            gudangdata[datamasuk[0].upper()][tipe] = data
 
     return warn
 
@@ -272,6 +314,15 @@ def hapus(datahapus, gudangdata):
             # Jika ditemukan data yang sama, pop data tersebut
             gudangdata.pop(data)
             return True
+
+
+def hapusdata(gudangdata):
+    """
+    Menghapus isi seluruh gudangdata
+    :param gudangdata: Database
+    :return: None
+    """
+    gudangdata.clear()
 
 
 def bukalink(perintah, gudangdata):
@@ -369,13 +420,13 @@ def main():
     Main process
     """
 
-    log = []    # Berisi log dari perintah yang dijalankan
-    kosong()    # Mengosongkan terminal
+    log = []  # Berisi log dari perintah yang dijalankan
+    kosong()  # Mengosongkan terminal
 
-    print(banner)       # Print banner
+    print(banner)  # Print banner
 
     while True:
-        print(separator) # Buat separator di setiap perintah
+        print(separator)  # Buat separator di setiap perintah
 
         try:
             perintah = input("> Masukkan perintah: ").split()
@@ -384,6 +435,11 @@ def main():
             if perintah[0].upper() == "IMPOR":
                 print(impordata(perintah, database))
                 log.append("Terimpor {}".format(perintah[1]))
+
+            # XIMPOR
+            elif perintah[0].upper() == "XIMPOR":
+                print(ximpordata(perintah, database))
+                log.append("Exclusive Import {}".format(perintah[1]))
 
             # EKSPOR
             elif perintah[0].upper() == "EKSPOR":
@@ -453,7 +509,8 @@ def main():
 
                     if tambah(masukan, database, kategori):
                         print(u" \33[43m\33[30m (!) Ditemukan data yang serupa di database sebelumnya. \33[0m\n" +
-                              u" \33[43m\33[30m BudayaKB Lite akan mengubah seluruh data lama dengan data baru. \33[0m\n")
+                              u" \33[43m\33[30m BudayaKB Lite akan mengubah seluruh data lama dengan data baru." +
+                              " \33[0m\n")
 
                     print(u" \33[42m\33[30m (i) {} ditambahkan \33[0m\n".format(masukan[0].title()))
                     log.append("TAMBAH {}".format(parsed))
@@ -510,7 +567,7 @@ def main():
                     log.append("LIHATDATA")
 
                 else:
-                    print(" \33[41m (!) Database masih kosong. \33[0m")
+                    print(" \33[41m (!) Database masih kosong. \33[0m\n")
                     log.append("LIHATDATA gagal, data masih kosong")
 
             # STAT
@@ -559,7 +616,10 @@ def main():
             # LOG
             elif perintah[0].upper() == "LOG":
                 # Print histori perintah
-                print(*log, sep="\n")
+                if len(log) == 0:
+                    print("Anda belum melakukan apa-apa\n")
+                else:
+                    print("\n", *log, "\n", sep="\n")
 
             # BERSIHKAN
             elif perintah[0].upper() == "BERSIHKAN":
@@ -567,6 +627,13 @@ def main():
                 kosong()
                 print(banner)
                 log.append("BERSIHKAN")
+
+            # HAPUSDATABASE
+            elif perintah[0].upper() == "HAPUSDATABASE":
+                # Menghapus isi database
+                hapusdata(database)
+                print(" \33[42m\33[30m (i) Database dikosongkan \33[0m\n")
+                log.append("HAPUSDATABASE")
 
             # KELUAR
             elif perintah[0].upper() == "KELUAR":
@@ -585,7 +652,7 @@ def main():
         except IndexError:
             pass
 
-        except (KeyboardInterrupt, EOFError) as e:
+        except (KeyboardInterrupt, EOFError):
             # Kalau ada yang iseng utak atik
             kosong()
             print("=" * 68 + "\n{:^68s}\n".format(
